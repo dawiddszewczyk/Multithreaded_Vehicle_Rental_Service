@@ -1,5 +1,6 @@
 package org.pk.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Column;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 
 @Table(name="klient_pojazd")
 @Entity(name="klient_pojazd")
-public class Wypozyczenie {
+public class Wypozyczenie implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

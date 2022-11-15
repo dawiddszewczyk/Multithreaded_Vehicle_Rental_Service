@@ -1,5 +1,6 @@
 package org.pk.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 
 @Table(name="pojazd")
 @Entity(name="pojazd")
-public class Pojazd {
+public class Pojazd implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package org.pk.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import org.hibernate.action.internal.OrphanRemovalAction;
 
 @Table(name="klient")
 @Entity(name="klient")
-public class Klient {
+public class Klient implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

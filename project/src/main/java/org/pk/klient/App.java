@@ -1,15 +1,16 @@
 package org.pk.klient;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.SplitPane;
 import org.pk.entity.Klient;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -40,11 +41,19 @@ public class App extends Application {
 			System.out.println("Wyjatek od strony klienta!");
 			wyjatek.printStackTrace();
 		}
-    	
-        var label = new Label("Hello, JavaFX ");
-        var scene = new Scene(new StackPane(label), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+
+		try {
+			SplitPane root = FXMLLoader.load(getClass().getResource("/AppView.fxml"));
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setTitle("App");
+			stage.show();
+
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
     }
 
     public static void main(String[] args) {

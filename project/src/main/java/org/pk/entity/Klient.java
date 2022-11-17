@@ -29,6 +29,8 @@ public class Klient implements Serializable {
 	private String nazwisko;
 	@Column(name="email")
 	private String email;
+	@Column(name="haslo")
+	private String haslo;
 	
 	@OneToMany(
 		mappedBy = "klient",
@@ -47,6 +49,21 @@ public class Klient implements Serializable {
 		this.imie = imie;
 		this.nazwisko = nazwisko;
 		this.email = email;
+	}
+	
+	public Klient(int id, String imie, String nazwisko, String email, String haslo) {
+		this.id = id;
+		this.imie = imie;
+		this.nazwisko = nazwisko;
+		this.email = email;
+		this.haslo = haslo;
+	}
+	
+	public Klient(String imie, String nazwisko, String email, String haslo) {
+		this.imie = imie;
+		this.nazwisko = nazwisko;
+		this.email = email;
+		this.haslo = haslo;
 	}
 
 	public void dodajPojazd(Pojazd pojazd) {
@@ -99,6 +116,14 @@ public class Klient implements Serializable {
 	public void setWypozyczenia(List<Wypozyczenie> wypozyczenia) {
 		this.wypozyczenia = wypozyczenia;
 	}
+	public String getHaslo() {
+		return haslo;
+	}
+
+	public void setHaslo(String haslo) {
+		this.haslo = haslo;
+	}
+
 	@Override
 	public String toString() {
 		return "Klient [id=" + id + ", imie=" + imie + ", nazwisko=" + nazwisko + ", email=" + email + ", wypozyczenia="

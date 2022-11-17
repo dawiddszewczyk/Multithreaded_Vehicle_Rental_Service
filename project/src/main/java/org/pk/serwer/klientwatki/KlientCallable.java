@@ -37,7 +37,7 @@ public class KlientCallable <V> implements Callable<V> {
 						System.out.println("wewnatrz stworzKlienta!");
 						polecenieKlient = odKlienta.readObject();
 						if(polecenieKlient instanceof Klient)
-						klientDao.stworzKlienta((Klient)polecenieKlient);
+							klientDao.stworzKlienta((Klient)polecenieKlient);
 					}
 				}
 			}

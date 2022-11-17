@@ -33,7 +33,7 @@ public class App extends Application {
 			if(polecenie.equals("stworzKlienta()")) {
 				System.out.println("Wysylam polecenie do serwera");
 				doSerwera.writeObject(polecenie);
-				doSerwera.writeObject(new Klient("Testowy", "Klient", "doSerwera"));
+				doSerwera.writeObject(new Klient("Testowy", "Klient", "doSerwera","haslopotezne"));
 				doSerwera.flush();
 			}
     	}catch (Exception wyjatek) {

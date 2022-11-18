@@ -7,11 +7,10 @@ import java.net.Socket;
 
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.SplitPane;
 import org.pk.entity.Klient;
 import javafx.application.Application;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 
@@ -43,7 +42,7 @@ public class App extends Application {
 		}
 
 		try {
-			SplitPane root = FXMLLoader.load(getClass().getResource("/AppView.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/fxml_files/AppView.fxml"));
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setTitle("App");

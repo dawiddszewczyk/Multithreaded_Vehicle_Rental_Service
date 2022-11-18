@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<SplitPane dividerPositions="0.8" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.8" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pk.klient.fxcontrollers.LoginSceneController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="599.0">
          <children>
@@ -19,7 +19,7 @@
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <Button layoutX="207.0" layoutY="25.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Sign Up" />
+            <Button layoutX="207.0" layoutY="25.0" mnemonicParsing="false" onAction="#przejdzDoRejestracji" prefHeight="26.0" prefWidth="150.0" text="Sign Up" />
             <Label layoutX="26.0" layoutY="16.0" text="New user?" />
          </children></AnchorPane>
   </items>

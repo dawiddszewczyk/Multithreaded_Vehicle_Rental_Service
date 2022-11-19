@@ -10,13 +10,18 @@ public class KlientDao {
 	private SessionFactory fabrykaSesji;
 	
 	
-	public KlientDao(SessionFactory fabrykaSesji) {
+	private KlientDao(SessionFactory fabrykaSesji) {
 		this.fabrykaSesji = fabrykaSesji;
 	}
 
 
 	public static KlientDao getInstance(SessionFactory fabrykaSesji) {
 		if(klientDao==null) klientDao = new KlientDao(fabrykaSesji);
+		return klientDao;
+	}
+	
+	public static KlientDao getInstance() {
+		if(klientDao==null) return null;
 		return klientDao;
 	}
 	

@@ -8,15 +8,14 @@ import java.util.concurrent.Callable;
 
 import org.pk.entity.Klient;
 import org.pk.serwer.dao.KlientDao;
+import org.pk.serwer.util.KlientManagerKomend;
 
 public class KlientCallable <V> implements Callable<V> {
 
 	private final Socket klient;
-	private KlientDao klientDao;
 	
 	public KlientCallable(Socket klient) {
 		this.klient = klient;
-		this.klientDao = KlientDao.getInstance(null);
 	}
 
 	@Override
@@ -31,15 +30,8 @@ public class KlientCallable <V> implements Callable<V> {
 			// logika klienta, miejsce do przechwytywania polecen
 			while(klient.isConnected()) {
 				polecenieKlient = odKlienta.readObject();
-				if(polecenieKlient instanceof String) {
-					System.out.println("Otrzymalem stringa!");
-					if(((String)polecenieKlient).equals("stworzKlienta()")) {
-						System.out.println("wewnatrz stworzKlienta!");
-						polecenieKlient = odKlienta.readObject();
-						if(polecenieKlient instanceof Klient)
-							klientDao.stworzKlienta((Klient)polecenieKlient);
-					}
-				}
+				// w strumieniu moze zostac jeszcze jeden obiekt, np. klient, dlatego przekazujemy strumienie
+				KlientManagerKomend.wykonajKomende((String)polecenieKlient, doKlienta, odKlienta);
 			}
 		}catch (IOException wyjatek) {
 			System.out.println("Wyjatek w klientcallable (nie wplywa na dzialanie serwera)!");

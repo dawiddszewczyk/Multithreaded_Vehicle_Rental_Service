@@ -8,6 +8,8 @@ import java.net.Socket;
 
 import javafx.fxml.FXMLLoader;
 import org.pk.entity.Klient;
+import org.pk.klient.util.ConnectionBox;
+
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,6 +31,8 @@ public class App extends Application {
     		serwer = new Socket("localhost",40000);
 			doSerwera = new ObjectOutputStream(serwer.getOutputStream());
 			odSerwera = new ObjectInputStream(serwer.getInputStream());
+			ConnectionBox.getInstance(odSerwera,doSerwera); // instancjonowanie polaczen w formie singletona
+			/*
 			String polecenie = "stworzKlienta()";
 			if(polecenie.equals("stworzKlienta()")) {
 				System.out.println("Wysylam polecenie do serwera");
@@ -36,6 +40,7 @@ public class App extends Application {
 				doSerwera.writeObject(new Klient("Testowy", "Klient", "doSerwera","haslopotezne"));
 				doSerwera.flush();
 			}
+			*/
     	}catch (Exception wyjatek) {
 			System.out.println("Wyjatek od strony klienta!");
 			wyjatek.printStackTrace();

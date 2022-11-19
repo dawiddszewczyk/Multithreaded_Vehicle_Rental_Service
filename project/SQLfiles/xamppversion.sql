@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `wypozyczalnia`.`klient` (
   `imie` VARCHAR(45) NOT NULL,
   `nazwisko` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `haslo` VARCHAR(45) NOT NULL,
+  `haslo` VARCHAR(80) NOT NULL,
   PRIMARY KEY (`idklienta`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1

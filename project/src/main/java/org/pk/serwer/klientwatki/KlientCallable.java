@@ -28,16 +28,19 @@ public class KlientCallable <V> implements Callable<V> {
 			odKlienta = new ObjectInputStream(klient.getInputStream());
 			Object polecenieKlient;
 			// logika klienta, miejsce do przechwytywania polecen
-			while(klient.isConnected()) {
+			while(!Thread.currentThread().isInterrupted()) {
+				//klient.isConnected()
 				polecenieKlient = odKlienta.readObject();
 				// w strumieniu moze zostac jeszcze jeden obiekt, np. klient, dlatego przekazujemy strumienie
 				KlientManagerKomend.wykonajKomende((String)polecenieKlient, doKlienta, odKlienta);
+				Thread.sleep(4000);
 			}
 		}catch (IOException wyjatek) {
 			System.out.println("Wyjatek w klientcallable (nie wplywa na dzialanie serwera)!");
 			//wyjatek.printStackTrace();
 		}finally {
 			try {
+				System.out.println("Klient zamykany! (Serwer)");
 				if(doKlienta!=null) doKlienta.close();
 				if(odKlienta!=null) odKlienta.close();
 				klient.close();

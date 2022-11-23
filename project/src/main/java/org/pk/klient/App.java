@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.fxml.FXMLLoader;
 import org.pk.entity.Klient;
@@ -27,20 +28,13 @@ public class App extends Application {
     	Socket serwer = null;
 		ObjectOutputStream doSerwera = null;
 		ObjectInputStream odSerwera= null;
+		ExecutorService wykonawcaPolaczenia = null;
     	try {
     		serwer = new Socket("localhost",40000);
 			doSerwera = new ObjectOutputStream(serwer.getOutputStream());
 			odSerwera = new ObjectInputStream(serwer.getInputStream());
-			ConnectionBox.getInstance(odSerwera,doSerwera); // instancjonowanie polaczen w formie singletona
-			/*
-			String polecenie = "stworzKlienta()";
-			if(polecenie.equals("stworzKlienta()")) {
-				System.out.println("Wysylam polecenie do serwera");
-				doSerwera.writeObject(polecenie);
-				doSerwera.writeObject(new Klient("Testowy", "Klient", "doSerwera","haslopotezne"));
-				doSerwera.flush();
-			}
-			*/
+			ConnectionBox.getInstance(odSerwera,doSerwera,serwer); // instancjonowanie logiki polaczen w formie singletona
+
     	}catch (Exception wyjatek) {
 			System.out.println("Wyjatek od strony klienta!");
 			wyjatek.printStackTrace();

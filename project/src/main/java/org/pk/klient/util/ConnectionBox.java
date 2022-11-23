@@ -69,9 +69,8 @@ public class ConnectionBox {
 			this.polaczenieSerwer.close();
 			this.odSerwera.close();
 			this.doSerwera.close();
-		} catch (IOException wyjatek) {
-			System.out.println("Wyjatek przy zamykaniu globalnych polaczen klienta");
-			wyjatek.printStackTrace();
+		} catch (IOException wyjatekIO) {
+			wyjatekIO.printStackTrace();
 		}
 	}
 	

@@ -22,7 +22,12 @@
             <Label layoutX="220.0" layoutY="208.0" text="Password" />
             <Label layoutX="220.0" layoutY="250.0" text="Confirm password" />
             <Label layoutX="43.0" layoutY="28.0" text="Registration page" />
-            <Label fx:id="infoLabel" layoutX="249.0" layoutY="302.0" prefHeight="17.0" prefWidth="88.0" />
+            <Label fx:id="infoLabel" contentDisplay="CENTER" layoutX="219.0" layoutY="302.0" prefHeight="17.0" prefWidth="231.0" textAlignment="CENTER" />
+            <Label fx:id="nameLabel" layoutX="374.0" layoutY="77.0" prefHeight="17.0" prefWidth="171.0" />
+            <Label fx:id="surnameLabel" layoutX="374.0" layoutY="123.0" prefHeight="17.0" prefWidth="171.0" />
+            <Label fx:id="emailLabel" layoutX="374.0" layoutY="174.0" prefHeight="17.0" prefWidth="171.0" />
+            <Label fx:id="passwdLabel" layoutX="374.0" layoutY="229.0" prefHeight="17.0" prefWidth="171.0" />
+            <Label fx:id="cPasswdLabel" layoutX="374.0" layoutY="273.0" prefHeight="17.0" prefWidth="171.0" />
          </children>
       </AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

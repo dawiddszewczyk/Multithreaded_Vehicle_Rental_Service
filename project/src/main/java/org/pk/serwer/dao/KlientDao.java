@@ -1,7 +1,5 @@
 package org.pk.serwer.dao;
 
-import static org.pk.util.StaleWartosci.bcrypt;
-
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
@@ -37,7 +35,11 @@ public class KlientDao {
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
 		
-		sesja.save(klient);
+		try {
+			sesja.save(klient);
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
+		}
 		
 		sesja.getTransaction().commit();
 		sesja.close();
@@ -47,16 +49,16 @@ public class KlientDao {
 		String emailZBazy="";
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
-		String queryInside="select K.email FROM klient K where K.email=:podanyEmail";
+		
 		try {
-			Query query = sesja.createQuery(queryInside);
+			Query query = sesja.createQuery("select K.email FROM klient K where K.email=:podanyEmail");
 			query.setParameter("podanyEmail",podanyEmail);
 			// zwroci wyjatek, jezeli od poczatku w bazie bedzie wiecej niz jeden taki sam mail!
 			emailZBazy = (String)query.getSingleResult();
-		}
-		catch(Exception e) {
-			System.out.println("Very powerful exception :)");
-			e.printStackTrace();
+		}catch(NoResultException wyjatekNRE) {
+			System.out.println("Nie znaleziono podanego adresu email");
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
 		}
 		
 		sesja.getTransaction().commit();
@@ -77,6 +79,8 @@ public class KlientDao {
 			BcryptFunction bcrypt = BcryptFunction.getInstanceFromHash(klientZBazy.getHaslo());
 			if(!Password.check(podaneHaslo,klientZBazy.getHaslo())
 						.with(bcrypt)) klientZBazy=null;
+		}catch(NoResultException wyjatekNRE) {
+			System.out.println("Nie znaleziono uzytkownika");
 		}catch(Exception wyjatek) {
 			wyjatek.printStackTrace();
 		}

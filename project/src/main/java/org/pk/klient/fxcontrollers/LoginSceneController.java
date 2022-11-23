@@ -1,6 +1,8 @@
 package org.pk.klient.fxcontrollers;
 
 
+import static org.pk.util.StaleWartosci.REGISTER_VIEW_XML;
+
 import java.io.IOException;
 
 import org.pk.entity.Klient;
@@ -28,37 +30,53 @@ public class LoginSceneController {
 	@FXML
 	private TextField emailField;
 	@FXML
-	private TextField passwordField;
+	private TextField passwdField;
+	@FXML
+	private Label emailLabel;
+	@FXML
+	private Label passwdLabel;
 	
 	public void przejdzDoRejestracji(ActionEvent zdarzenie) throws IOException {
-		kontener = FXMLLoader.load(getClass().getResource("/fxml_files/RegisterView.fxml"));
+		kontener = FXMLLoader.load(getClass().getResource(REGISTER_VIEW_XML));
 		stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
 		scene = new Scene(kontener);
 		stage.setScene(scene);
 		stage.show();
 	}
-	public void wyczyscLabele() {
+	public void wyczyscFieldy() {
 		emailField.clear();
-		passwordField.clear();
+		passwdField.clear();
+	}
+	public void wyczyscLabele() {
+		emailLabel.setText(null);
+		passwdLabel.setText(null);
 	}
 	public void udanaRejestracja(String wiadomosc){
 		regInfoLabel.setText(wiadomosc);
 	}
 	public void logowanie(ActionEvent zdarzenie) {
+		
 		Runnable watek = ()->{
+			// Wstepny clear labelow w razie N-tej proby logowania
+			Platform.runLater(()->wyczyscLabele());
 			// Walidacja czy pola puste
-			Platform.runLater(()->{
-				if(emailField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-					regInfoLabel.setText("Email or password is empty!");
-					wyczyscLabele();
-					return;
-				}
-			});
+			if(emailField.getText().isEmpty()) {
+				Platform.runLater(()->{
+					emailLabel.setText("Email field is empty!");
+				});
+				return;
+			}
+			if(passwdField.getText().isEmpty()) {
+				Platform.runLater(()->{
+					passwdLabel.setText("Password field is empty!");
+				});
+				return;
+			}
 			// Pobranie uzytkownika z bazy
 			try {
 				ConnectionBox.getInstance().getDoSerwera().writeObject("logowanie()");
 				ConnectionBox.getInstance().getDoSerwera().writeObject(emailField.getText());
-				ConnectionBox.getInstance().getDoSerwera().writeObject(passwordField.getText());
+				ConnectionBox.getInstance().getDoSerwera().writeObject(passwdField.getText());
 				ConnectionBox.getInstance().getDoSerwera().flush();
 			}catch(Exception wyjatek) {
 				wyjatek.printStackTrace();
@@ -73,8 +91,10 @@ public class LoginSceneController {
 			}
 			
 			if(klientZSerwera==null) {
-				Platform.runLater(()->regInfoLabel.setText("Wrong email or password"));
-				wyczyscLabele();
+				Platform.runLater(()->{
+					regInfoLabel.setText("Wrong email or password");
+					wyczyscFieldy();
+				});
 				return;
 			}
 			
@@ -88,7 +108,7 @@ public class LoginSceneController {
 			/*
 			Platform.runLater(()->{
 				try {
-					kontener = FXMLLoader.load(getClass().getResource("/fxml_files/PlikAdrianowy.xml"));
+					kontener = FXMLLoader.load(getClass().getResource("/fxml_files/PlikAdrianowy.xml" Lub daj stałą tak jak ja));
 				} catch (IOException wyjatekIo) {
 					wyjatekIo.printStackTrace();
 				}

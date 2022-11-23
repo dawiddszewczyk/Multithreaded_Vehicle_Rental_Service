@@ -13,8 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.action.internal.OrphanRemovalAction;
 
+@SuppressWarnings("serial")
 @Table(name="klient")
 @Entity(name="klient")
 public class Klient implements Serializable {
@@ -38,6 +38,7 @@ public class Klient implements Serializable {
 	)
 	private List<Wypozyczenie> wypozyczenia;
 	
+	// Pusty konstruktor dla Hibernate
 	public Klient() {
 		
 	}
@@ -71,8 +72,8 @@ public class Klient implements Serializable {
 	}
 
 	public void dodajPojazd(Pojazd pojazd) {
-		if(wypozyczenia==null) wypozyczenia = new ArrayList();
-		if(pojazd.getWypozyczenia()==null) pojazd.setWypozyczenia(new ArrayList());
+		if(wypozyczenia==null) wypozyczenia = new ArrayList<>();
+		if(pojazd.getWypozyczenia()==null) pojazd.setWypozyczenia(new ArrayList<>());
 		Wypozyczenie wypozyczenie = new Wypozyczenie(this, pojazd);
 		this.wypozyczenia.add(wypozyczenie);
 		pojazd.getWypozyczenia().add(wypozyczenie);

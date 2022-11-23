@@ -1,17 +1,14 @@
 package org.pk.klient.fxcontrollers;
 
+import static org.pk.util.StaleWartosci.APP_VIEW_XML;
 import static org.pk.util.StaleWartosci.bcrypt;
 
-import java.io.EOFException;
 import java.io.IOException;
 
 import org.pk.entity.Klient;
 import org.pk.klient.util.ConnectionBox;
-import org.pk.util.StaleWartosci;
 
-import com.password4j.BcryptFunction;
 import com.password4j.Password;
-import com.password4j.types.Bcrypt;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -42,16 +39,26 @@ public class RejestracjaSceneController {
 	private TextField cPasswdField;
 	@FXML
 	private Label infoLabel;
+	@FXML
+	private Label nameLabel;
+	@FXML
+	private Label surnameLabel;
+	@FXML
+	private Label emailLabel;
+	@FXML
+	private Label passwdLabel;
+	@FXML
+	private Label cPasswdLabel;
 	
 	public void cofnijDoLogowania(ActionEvent zdarzenie) throws IOException {
-		kontener = FXMLLoader.load(getClass().getResource("/fxml_files/AppView.fxml"));
+		kontener = FXMLLoader.load(getClass().getResource(APP_VIEW_XML));
 		stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
 		scene = new Scene(kontener);
 		stage.setScene(scene);
 		stage.show();
 	}
 	
-	public void wyczyscLabele() {
+	public void wyczyscFieldy() {
 		nameField.clear();
 		surnameField.clear();
 		emailField.clear();
@@ -59,27 +66,42 @@ public class RejestracjaSceneController {
 		cPasswdField.clear();
 	}
 	
+	public void wyczyscLabele() {
+		infoLabel.setText(null);
+		nameLabel.setText(null);
+		surnameLabel.setText(null);
+		emailLabel.setText(null);
+		passwdLabel.setText(null);
+		cPasswdLabel.setText(null);
+	}
+	
 	public void wykonajRejestracje(ActionEvent zdarzenie) throws IOException, ClassNotFoundException, InterruptedException {
 		Runnable watek = ()->{
-		// Podstawowa walidacja
-			Platform.runLater(()->{
-				if(!passwdField.getText().equals(cPasswdField.getText())) {
-					infoLabel.setText("Password fields must match!");
-					wyczyscLabele();
-					return;
-				}
-				if(nameField.getText().isEmpty() || surnameField.getText().isEmpty() || emailField.getText().isEmpty()
-						|| passwdField.getText().isEmpty() || cPasswdField.getText().isEmpty()) {
+			// Wstepny clear labelow w razie N-tej proby rejestracji
+			Platform.runLater(()->wyczyscLabele());
+			// Podstawowa walidacja
+			if(!passwdField.getText().equals(cPasswdField.getText())) {
+				Platform.runLater(()->{
+					cPasswdLabel.setText("Password fields must match!");
+					wyczyscFieldy();
+				});
+				return;
+			}
+			if(nameField.getText().isEmpty() || surnameField.getText().isEmpty() || emailField.getText().isEmpty()
+					|| passwdField.getText().isEmpty() || cPasswdField.getText().isEmpty()) {
+				Platform.runLater(()->{
 					infoLabel.setText("All fields must be filled!");
-					wyczyscLabele();
-					return;
-				}
-				if(!emailField.getText().contains("@") || !emailField.getText().contains(".")) {
-					infoLabel.setText("Email must be valid!");
-					wyczyscLabele();
-					return;
-				}
-			});
+					wyczyscFieldy();
+				});
+				return;
+			}
+			if(!emailField.getText().contains("@") || !emailField.getText().contains(".")) {
+				Platform.runLater(()->{
+					emailLabel.setText("Email must be valid and not taken!");
+					wyczyscFieldy();
+				});
+				return;
+			}
 			// Walidacja, czy podany adres email istnieje w bazie
 			try {
 				ConnectionBox.getInstance().getDoSerwera().writeObject("pobierzEmail()");
@@ -93,22 +115,18 @@ public class RejestracjaSceneController {
 			try {
 				emailZSerwera = (String)ConnectionBox.getInstance().getOdSerwera().readObject();
 			}catch(Exception wyjatek) {
-				System.out.println("Wyjatek podczas czytania emailu z bazy danych! - Register");
 				wyjatek.printStackTrace();
 			}
 			
 			if(emailZSerwera.equals(emailField.getText())) {
-				Platform.runLater(()->infoLabel.setText("This email is already taken!"));
-				wyczyscLabele();
+				Platform.runLater(()->{
+					emailLabel.setText("Email must be valid!");
+					wyczyscFieldy();
+				});
 				return;
 			}
 			// Szyfrowanie zewnetrzna biblioteka
 			String haslo = Password.hash(passwdField.getText()).with(bcrypt).getResult();
-			
-			/*
-			System.out.println("TEST BCRYPT: "+haslo);
-			System.out.println("CZY ODSZYFROWANIE SIE ZGADZA: " + Password.check(passwdField.getText(), haslo).with(bcrypt));
-			 */
 			// Operacja w bazie danych poprzez serwer
 			Klient nowyKlient = new Klient(nameField.getText(),surnameField.getText(),emailField.getText(),haslo);
 			try {
@@ -120,7 +138,7 @@ public class RejestracjaSceneController {
 			}
 			Platform.runLater(()->{
 				// Stworzenie konta zakonczone sukcesem, przejscie na scene logowania i zaladowanie komunikatu
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/AppView.fxml"));
+				FXMLLoader loader = new FXMLLoader(getClass().getResource(APP_VIEW_XML));
 				try {
 					kontener = loader.load();
 				} catch (IOException wyjatekIO) {

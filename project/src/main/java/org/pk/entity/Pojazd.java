@@ -34,6 +34,10 @@ public class Pojazd implements Serializable {
 	)
 	private List<Wypozyczenie> wypozyczenia;
 	
+	public Pojazd() {
+		
+	}
+
 	public Pojazd(int id, String nazwa, double stanBaterii, double licznikkm) {
 		this.id = id;
 		this.nazwa = nazwa;

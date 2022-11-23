@@ -1,11 +1,16 @@
 package org.pk.serwer.dao;
 
+import static org.pk.util.StaleWartosci.bcrypt;
+
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.pk.entity.Klient;
+
+import com.password4j.BcryptFunction;
+import com.password4j.Password;
 
 public class KlientDao {
 
@@ -43,7 +48,6 @@ public class KlientDao {
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
 		String queryInside="select K.email FROM klient K where K.email=:podanyEmail";
-		//String queryInside2="select email FROM klient where email=:podanyEmail limit 1";
 		try {
 			Query query = sesja.createQuery(queryInside);
 			query.setParameter("podanyEmail",podanyEmail);
@@ -60,4 +64,25 @@ public class KlientDao {
 		return emailZBazy;
 	}
 	
+	public Klient logowanie(String podanyEmail, String podaneHaslo) {
+		Klient klientZBazy=null;
+		Session sesja = fabrykaSesji.getCurrentSession();
+		sesja.beginTransaction();
+		
+		try {
+			Query query = sesja.createQuery("FROM klient K where K.email=:podanyEmail");
+			query.setParameter("podanyEmail", podanyEmail);
+			klientZBazy = (Klient)query.getSingleResult();
+			// sprawdzanie hasla
+			BcryptFunction bcrypt = BcryptFunction.getInstanceFromHash(klientZBazy.getHaslo());
+			if(!Password.check(podaneHaslo,klientZBazy.getHaslo())
+						.with(bcrypt)) klientZBazy=null;
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
+		}
+		
+		sesja.getTransaction().commit();
+		sesja.close();
+		return klientZBazy;
+	}
 }

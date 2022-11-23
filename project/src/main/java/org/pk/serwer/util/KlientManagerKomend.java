@@ -21,6 +21,13 @@ public class KlientManagerKomend {
 			doKlienta.writeObject(emailZSerwera);
 			doKlienta.flush();
 			break;
+		case "logowanie()":
+			String emailOdKlienta = (String) odKlienta.readObject();
+			String hasloOdKlienta = (String) odKlienta.readObject();
+			Klient pobranyKlientZSerwera = KlientDao.getInstance()
+										   .logowanie(emailOdKlienta,hasloOdKlienta);
+			doKlienta.writeObject(pobranyKlientZSerwera);
+			doKlienta.flush();
 		default:
 			break;
 		}

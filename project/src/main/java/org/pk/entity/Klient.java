@@ -38,6 +38,10 @@ public class Klient implements Serializable {
 	)
 	private List<Wypozyczenie> wypozyczenia;
 	
+	public Klient() {
+		
+	}
+	
 	public Klient(String imie, String nazwisko, String email) {
 		this.imie = imie;
 		this.nazwisko = nazwisko;

@@ -35,6 +35,10 @@ public class Wypozyczenie implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="idpojazduW")
 	private Pojazd pojazd;
+	
+	public Wypozyczenie() {
+
+	}
 
 	public Wypozyczenie(Klient klient, Pojazd pojazd) {
 		this.klient = klient;

@@ -1,10 +1,13 @@
 package org.pk.klient.fxcontrollers;
 
+import static org.pk.util.StaleWartosci.bcrypt;
+
 import java.io.EOFException;
 import java.io.IOException;
 
 import org.pk.entity.Klient;
 import org.pk.klient.util.ConnectionBox;
+import org.pk.util.StaleWartosci;
 
 import com.password4j.BcryptFunction;
 import com.password4j.Password;
@@ -94,15 +97,14 @@ public class RejestracjaSceneController {
 				wyjatek.printStackTrace();
 			}
 			
-		
 			if(emailZSerwera.equals(emailField.getText())) {
 				Platform.runLater(()->infoLabel.setText("This email is already taken!"));
 				wyczyscLabele();
 				return;
 			}
 			// Szyfrowanie zewnetrzna biblioteka
-			BcryptFunction bcrypt = BcryptFunction.getInstance(Bcrypt.Y,10);
 			String haslo = Password.hash(passwdField.getText()).with(bcrypt).getResult();
+			
 			/*
 			System.out.println("TEST BCRYPT: "+haslo);
 			System.out.println("CZY ODSZYFROWANIE SIE ZGADZA: " + Password.check(passwdField.getText(), haslo).with(bcrypt));

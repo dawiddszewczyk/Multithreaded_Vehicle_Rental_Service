@@ -33,7 +33,6 @@ public class KlientCallable <V> implements Callable<V> {
 				polecenieKlient = odKlienta.readObject();
 				// w strumieniu moze zostac jeszcze jeden obiekt, np. klient, dlatego przekazujemy strumienie
 				KlientManagerKomend.wykonajKomende((String)polecenieKlient, doKlienta, odKlienta);
-				Thread.sleep(4000);
 			}
 		}catch (IOException wyjatek) {
 			System.out.println("Wyjatek w klientcallable (nie wplywa na dzialanie serwera)!");

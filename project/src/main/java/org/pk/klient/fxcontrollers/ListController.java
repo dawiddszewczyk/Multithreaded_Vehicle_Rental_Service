@@ -5,6 +5,7 @@ package org.pk.klient.fxcontrollers;
         import javafx.fxml.FXML;
         import javafx.scene.control.TableColumn;
         import javafx.scene.control.TableView;
+        import javafx.scene.input.MouseEvent;
         import org.pk.entity.Pojazd;
         import org.pk.klient.util.ConnectionBox;
 
@@ -28,6 +29,7 @@ public class ListController {
     @FXML
     private TableView tv;
     private List<Pojazd> listaHulajnog;
+    private Pojazd wybranyPojazd;
     @FXML
     void pobierzListe(ActionEvent event) throws IOException, ClassNotFoundException {
         ConnectionBox.getInstance().getDoSerwera().writeObject("getList()");
@@ -36,9 +38,21 @@ public class ListController {
 
         ConnectionBox.getInstance().getDoSerwera().flush();
         for(Pojazd temp:listaHulajnog){
-            System.out.println("Debug Eventu");
-            System.out.print(temp.toString());
-            //tv.getItems().add(temp);
+            tv.getItems().add(temp);
         }
+    }
+    @FXML
+    public void wybierzPojazd(MouseEvent event) {
+        if (event.getClickCount() == 2)
+        {
+            if(tv.getSelectionModel().getSelectedItem().getClass()==Pojazd.class){
+                wybranyPojazd=(Pojazd)tv.getSelectionModel().getSelectedItem();
+                System.out.println(wybranyPojazd.toString());
+            }
+        }
+    }
+    @FXML
+    public void wypozyczPojazd(MouseEvent event) {
+
     }
 }

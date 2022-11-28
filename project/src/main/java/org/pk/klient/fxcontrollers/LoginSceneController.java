@@ -1,6 +1,7 @@
 package org.pk.klient.fxcontrollers;
 
 
+import static org.pk.util.StaleWartosci.LIST_VIEW_XML;
 import static org.pk.util.StaleWartosci.REGISTER_VIEW_XML;
 
 import java.io.IOException;
@@ -105,10 +106,9 @@ public class LoginSceneController {
 			// do wyrzucenia po zaimplementowaniu przejscia do innej sceny (ten platform run later nizej)
 			Platform.runLater(()->regInfoLabel.setText("Login successful"));
 			// odkomentuj i wstaw w sciezke swoj fxml
-			/*
 			Platform.runLater(()->{
 				try {
-					kontener = FXMLLoader.load(getClass().getResource("/fxml_files/PlikAdrianowy.xml" Lub daj stałą tak jak ja));
+					kontener = FXMLLoader.load(getClass().getResource(LIST_VIEW_XML));
 				} catch (IOException wyjatekIo) {
 					wyjatekIo.printStackTrace();
 				}
@@ -117,7 +117,6 @@ public class LoginSceneController {
 				stage.setScene(scene);
 				stage.show();
 			});
-		*/
 		};
 		ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
 	}

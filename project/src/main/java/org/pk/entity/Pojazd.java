@@ -56,10 +56,6 @@ public class Pojazd implements Serializable {
 		this.licznikkm = licznikkm;
 	}
 
-	public Pojazd() {
-
-	}
-
 	public int getId() {
 		return id;
 	}

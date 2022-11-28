@@ -4,17 +4,15 @@ import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+@SuppressWarnings("serial")
 @Table(name="klient_pojazd")
 @Entity(name="klient_pojazd")
 public class Wypozyczenie implements Serializable {
@@ -35,6 +33,11 @@ public class Wypozyczenie implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="idpojazduW")
 	private Pojazd pojazd;
+	
+	// Pusty konstruktor dla Hibernate
+	public Wypozyczenie() {
+
+	}
 
 	public Wypozyczenie(Klient klient, Pojazd pojazd) {
 		this.klient = klient;

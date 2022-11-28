@@ -5,6 +5,7 @@ import java.util.concurrent.FutureTask;
 
 public class KlientFtask <V> extends FutureTask<V> {
 
+	@SuppressWarnings("unused")
 	private KlientCallable<V> klientPolaczenie;
 	
 	public KlientFtask(Callable<V> klientPolaczenie) {

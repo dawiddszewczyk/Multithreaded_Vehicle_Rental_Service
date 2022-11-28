@@ -1,6 +1,8 @@
 package org.pk.serwer.dao;
 
-import javafx.collections.ObservableList;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -9,6 +11,9 @@ import org.pk.entity.Klient;
 import org.pk.entity.Pojazd;
 
 import java.util.List;
+
+import com.password4j.BcryptFunction;
+import com.password4j.Password;
 
 public class KlientDao {
 
@@ -35,10 +40,59 @@ public class KlientDao {
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
 		
-		sesja.save(klient);
+		try {
+			sesja.save(klient);
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
+		}
+
+		sesja.getTransaction().commit();
+		sesja.close();
+	}
+
+	public String pobierzEmail(String podanyEmail) {
+		String emailZBazy="";
+		Session sesja = fabrykaSesji.getCurrentSession();
+		sesja.beginTransaction();
+
+		try {
+			Query query = sesja.createQuery("select K.email FROM klient K where K.email=:podanyEmail");
+			query.setParameter("podanyEmail",podanyEmail);
+			// zwroci wyjatek, jezeli od poczatku w bazie bedzie wiecej niz jeden taki sam mail!
+			emailZBazy = (String)query.getSingleResult();
+		}catch(NoResultException wyjatekNRE) {
+			System.out.println("Nie znaleziono podanego adresu email");
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
+		}
+
+		sesja.getTransaction().commit();
+		sesja.close();
+		return emailZBazy;
+	}
+
+	public Klient logowanie(String podanyEmail, String podaneHaslo) {
+		Klient klientZBazy=null;
+		Session sesja = fabrykaSesji.getCurrentSession();
+		sesja.beginTransaction();
+
+		try {
+			Query query = sesja.createQuery("FROM klient K where K.email=:podanyEmail");
+			query.setParameter("podanyEmail", podanyEmail);
+			klientZBazy = (Klient)query.getSingleResult();
+			// sprawdzanie hasla
+			BcryptFunction bcrypt = BcryptFunction.getInstanceFromHash(klientZBazy.getHaslo());
+			if(!Password.check(podaneHaslo,klientZBazy.getHaslo())
+						.with(bcrypt)) klientZBazy=null;
+		}catch(NoResultException wyjatekNRE) {
+			System.out.println("Nie znaleziono uzytkownika");
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
+		}
 		
 		sesja.getTransaction().commit();
 		sesja.close();
+		return klientZBazy;
 	}
 
 	public List<Pojazd> getList(){

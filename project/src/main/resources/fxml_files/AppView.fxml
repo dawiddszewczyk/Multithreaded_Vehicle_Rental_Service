@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -10,13 +11,15 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="599.0">
          <children>
-            <TextField layoutX="207.0" layoutY="124.0" />
-            <TextField layoutX="206.0" layoutY="176.0" />
-            <Button layoutX="205.0" layoutY="225.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Log In" />
+            <TextField fx:id="emailField" layoutX="207.0" layoutY="124.0" />
+            <Button layoutX="205.0" layoutY="225.0" mnemonicParsing="false" onAction="#logowanie" prefHeight="26.0" prefWidth="150.0" text="Log In" />
             <Label layoutX="28.0" layoutY="14.0" text="Log In" />
-            <Label layoutX="207.0" layoutY="106.0" text="Username" />
+            <Label layoutX="207.0" layoutY="106.0" text="Email" />
             <Label layoutX="208.0" layoutY="158.0" text="Password" />
-            <Label fx:id="regInfoLabel" layoutX="187.0" layoutY="271.0" prefHeight="17.0" prefWidth="189.0" />
+            <Label fx:id="regInfoLabel" contentDisplay="CENTER" layoutX="205.0" layoutY="273.0" prefHeight="17.0" prefWidth="238.0" textAlignment="CENTER" />
+            <PasswordField fx:id="passwdField" layoutX="207.0" layoutY="175.0" />
+            <Label fx:id="emailLabel" layoutX="362.0" layoutY="128.0" />
+            <Label fx:id="passwdLabel" layoutX="362.0" layoutY="179.0" />
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>

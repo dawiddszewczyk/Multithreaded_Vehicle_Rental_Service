@@ -3,7 +3,6 @@ package org.pk.entity;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+@SuppressWarnings("serial")
 @Table(name="pojazd")
 @Entity(name="pojazd")
 public class Pojazd implements Serializable {
@@ -37,6 +37,11 @@ public class Pojazd implements Serializable {
 	private List<Wypozyczenie> wypozyczenia;
 
 	
+	// Pusty konstruktor dla Hibernate
+	public Pojazd() {
+		
+	}
+
 	public Pojazd(int id, String nazwa, double stanBaterii, double licznikkm) {
 		this.id = id;
 		this.nazwa = nazwa;

@@ -14,6 +14,18 @@ public class KlientManagerKomend {
 			KlientDao.getInstance().stworzKlienta((Klient)odKlienta.readObject());
 			System.out.println("Pomyslnie utworzono klienta!");
 			break;
+		case "pobierzEmail()":
+			String emailZSerwera = KlientDao.getInstance().pobierzEmail((String)odKlienta.readObject());
+			doKlienta.writeObject(emailZSerwera);
+			doKlienta.flush();
+			break;
+		case "logowanie()":
+			String emailOdKlienta = (String) odKlienta.readObject();
+			String hasloOdKlienta = (String) odKlienta.readObject();
+			Klient pobranyKlientZSerwera = KlientDao.getInstance()
+										   			.logowanie(emailOdKlienta,hasloOdKlienta);
+			doKlienta.writeObject(pobranyKlientZSerwera);
+			doKlienta.flush();
 			case "getList()":
 				System.out.println("Manager");
 				doKlienta.writeObject(KlientDao.getInstance().getList());

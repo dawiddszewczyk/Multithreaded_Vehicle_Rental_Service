@@ -1,5 +1,8 @@
 package org.pk.serwer.klientwatki;
 
+import static org.pk.util.StaleWartosci.DOSTEPNA_ILOSC_WATKOW;
+import static org.pk.util.StaleWartosci.NUMER_PORTU;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,16 +16,16 @@ public class SerwerStart {
 		ServerSocket serwer = null;
 		ExecutorService wykonawcaKlient = null;
 		try {
-			serwer = new ServerSocket(40000); // TO DO: stala
+			serwer = new ServerSocket(NUMER_PORTU); // TO DO: stala
 			serwer.setReuseAddress(true);
-			wykonawcaKlient = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());	// TO DO: stala	
+			wykonawcaKlient = Executors.newFixedThreadPool(DOSTEPNA_ILOSC_WATKOW);	// TO DO: stala	
 			// petla nasluchujaca na nowych klientow, .accept() blokuje dzialanie programu
 			while(true) {
 				Socket klient = serwer.accept();
-				System.out.println("Klient podlaczony" + klient.getInetAddress().getHostAddress());
+				System.out.println("Klient podlaczony: " + klient.getInetAddress().getHostAddress());
 				
 				KlientCallable<Integer> klientPolaczenie = new KlientCallable<>(klient);
-				// Obiekt futuretask do zarzadzania watkiem, wrapper dla polaczenia
+				// Obiekt futuretask do zarzadzania watkiem, wrapper dla polaczenia, mozliwe, ze bedzie bezuzyteczne w przyszlosci
 				KlientFtask<Integer> klientFPolaczenie = new KlientFtask<>(klientPolaczenie);
 				wykonawcaKlient.execute(klientFPolaczenie);
 			}	
@@ -35,7 +38,6 @@ public class SerwerStart {
 					wykonawcaKlient.shutdownNow();
 					fabrykaSesji.close();
 				} catch (IOException wyjatek) {
-					System.out.println("Wyjatek przy zamykaniu serwera!");
 					wyjatek.printStackTrace();
 				}
 			

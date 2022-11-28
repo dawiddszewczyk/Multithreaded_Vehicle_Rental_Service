@@ -1,10 +1,14 @@
 package org.pk.klient;
 
+import static org.pk.util.StaleWartosci.APP_VIEW_XML;
+import static org.pk.util.StaleWartosci.NUMER_PORTU;
+import static org.pk.util.StaleWartosci.TYTUL_APKI;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
+import java.util.concurrent.ExecutorService;
 
 import javafx.fxml.FXMLLoader;
 import org.pk.entity.Klient;
@@ -27,35 +31,29 @@ public class App extends Application {
     	Socket serwer = null;
 		ObjectOutputStream doSerwera = null;
 		ObjectInputStream odSerwera= null;
+		@SuppressWarnings("unused")
+		ExecutorService wykonawcaPolaczenia = null;
+
     	try {
-    		serwer = new Socket("localhost",40000);
+    		serwer = new Socket("localhost",NUMER_PORTU);
 			doSerwera = new ObjectOutputStream(serwer.getOutputStream());
 			odSerwera = new ObjectInputStream(serwer.getInputStream());
-			ConnectionBox.getInstance(odSerwera,doSerwera); // instancjonowanie polaczen w formie singletona
-			/*
-			String polecenie = "stworzKlienta()";
-			if(polecenie.equals("stworzKlienta()")) {
-				System.out.println("Wysylam polecenie do serwera");
-				doSerwera.writeObject(polecenie);
-				doSerwera.writeObject(new Klient("Testowy", "Klient", "doSerwera","haslopotezne"));
-				doSerwera.flush();
-			}
-			*/
+			ConnectionBox.getInstance(odSerwera,doSerwera,serwer); // instancjonowanie logiki polaczen w formie singletona
+
     	}catch (Exception wyjatek) {
 			System.out.println("Wyjatek od strony klienta!");
 			wyjatek.printStackTrace();
 		}
 
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/fxml_files/ListView.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/fxml_files/AppView.fxml"));
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
-			stage.setTitle("App");
+			stage.setTitle(TYTUL_APKI);
 			stage.show();
-
-
-		} catch (IOException e) {
-			e.printStackTrace();
+			stage.setOnCloseRequest((zdarzenie)->ConnectionBox.getInstance().zamknijPolaczenia());
+		} catch (IOException wyjatekIO) {
+			wyjatekIO.printStackTrace();
 		}
 
     }

@@ -15,6 +15,7 @@ public class ConnectionBox {
 	private ObjectOutputStream doSerwera;
 	private int idKlienta;
 	private ExecutorService wykonawcaGlobalny;
+	private ObecneWypozyczenieFTask<?> wypozyczenie;
 	
 	
 	private ConnectionBox(ObjectInputStream odSerwera, ObjectOutputStream doSerwera, Socket polaczenieSerwer) {
@@ -63,6 +64,14 @@ public class ConnectionBox {
 		this.wykonawcaGlobalny = wykonawcaGlobalny;
 	}
 	
+	public ObecneWypozyczenieFTask<?> getWypozyczenie() {
+		return wypozyczenie;
+	}
+
+	public void setWypozyczenie(ObecneWypozyczenieFTask<?> wypozyczenie) {
+		this.wypozyczenie = wypozyczenie;
+	}
+
 	public void zamknijPolaczenia() {
 		this.wykonawcaGlobalny.shutdownNow();
 		try {

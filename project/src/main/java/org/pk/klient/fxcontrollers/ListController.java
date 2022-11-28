@@ -55,34 +55,37 @@ public class ListController {
     }
     @FXML
     public void wybierzPojazd(MouseEvent event) {
-        if (event.getClickCount() == 2)
-        {
-            if(tv.getSelectionModel().getSelectedItem().getClass()==Pojazd.class){
-                wybranyPojazd=(Pojazd)tv.getSelectionModel().getSelectedItem();
-                Platform.runLater(()->{
-                    // Stworzenie konta zakonczone sukcesem, przejscie na scene logowania i zaladowanie komunikatu
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource(SCOOTER_VIEW_XML));
-                    try {
-                        kontener = loader.load();
-                    } catch (IOException wyjatekIO) {
-                        wyjatekIO.printStackTrace();
-                    }
-
-                    stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-                    scene = new Scene(kontener);
-                    stage.setScene(scene);
-
-                    ScooterController scooterController=loader.getController();
-                    scooterController.ustawWartosci(wybranyPojazd);
-                    try {
-                        scooterController.zmienStan(wybranyPojazd);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    stage.show();
-                });
-            }
-        }
+    	Runnable watek = () ->{
+    		if (event.getClickCount() == 2)
+    		{
+    			if(tv.getSelectionModel().getSelectedItem().getClass()==Pojazd.class){
+    				wybranyPojazd=(Pojazd)tv.getSelectionModel().getSelectedItem();
+    				Platform.runLater(()->{
+    					// Stworzenie konta zakonczone sukcesem, przejscie na scene logowania i zaladowanie komunikatu
+    					FXMLLoader loader = new FXMLLoader(getClass().getResource(SCOOTER_VIEW_XML));
+    					try {
+    						kontener = loader.load();
+    					} catch (IOException wyjatekIO) {
+    						wyjatekIO.printStackTrace();
+    					}
+    					
+    					stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+    					scene = new Scene(kontener);
+    					stage.setScene(scene);
+    					
+    					ScooterController scooterController=loader.getController();
+    					scooterController.ustawWartosci(wybranyPojazd);
+    					try {
+    						scooterController.zmienStan(wybranyPojazd);
+    					} catch (InterruptedException e) {
+    						throw new RuntimeException(e);
+    					}
+    					
+    					stage.show();
+    				});
+    			}
+    		}
+    	};
+    	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
     }
 }

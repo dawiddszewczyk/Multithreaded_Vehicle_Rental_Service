@@ -1,19 +1,30 @@
 package org.pk.klient.fxcontrollers;
 
+        import javafx.application.Platform;
         import javafx.collections.ObservableList;
         import javafx.event.ActionEvent;
         import javafx.fxml.FXML;
+        import javafx.fxml.FXMLLoader;
+        import javafx.scene.Node;
+        import javafx.scene.Parent;
+        import javafx.scene.Scene;
         import javafx.scene.control.TableColumn;
         import javafx.scene.control.TableView;
         import javafx.scene.input.MouseEvent;
+        import javafx.stage.Stage;
         import org.pk.entity.Pojazd;
         import org.pk.klient.util.ConnectionBox;
 
         import java.io.IOException;
         import java.util.List;
 
-public class ListController {
+        import static org.pk.util.StaleWartosci.APP_VIEW_XML;
+        import static org.pk.util.StaleWartosci.SCOOTER_VIEW_XML;
 
+public class ListController {
+    private Stage stage;
+    private Scene scene;
+    private Parent kontener;
     @FXML
     private TableColumn<Pojazd, Integer> tA;
 
@@ -37,6 +48,7 @@ public class ListController {
         listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
 
         ConnectionBox.getInstance().getDoSerwera().flush();
+        tv.getItems().clear();
         for(Pojazd temp:listaHulajnog){
             tv.getItems().add(temp);
         }
@@ -47,12 +59,30 @@ public class ListController {
         {
             if(tv.getSelectionModel().getSelectedItem().getClass()==Pojazd.class){
                 wybranyPojazd=(Pojazd)tv.getSelectionModel().getSelectedItem();
-                System.out.println(wybranyPojazd.toString());
+                Platform.runLater(()->{
+                    // Stworzenie konta zakonczone sukcesem, przejscie na scene logowania i zaladowanie komunikatu
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(SCOOTER_VIEW_XML));
+                    try {
+                        kontener = loader.load();
+                    } catch (IOException wyjatekIO) {
+                        wyjatekIO.printStackTrace();
+                    }
+
+                    stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+                    scene = new Scene(kontener);
+                    stage.setScene(scene);
+
+                    ScooterController scooterController=loader.getController();
+                    scooterController.ustawWartosci(wybranyPojazd);
+                    try {
+                        scooterController.zmienStan(wybranyPojazd);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    stage.show();
+                });
             }
         }
-    }
-    @FXML
-    public void wypozyczPojazd(MouseEvent event) {
-
     }
 }

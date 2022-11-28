@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.pk.entity.Hulajnoga;
 import org.pk.entity.Klient;
 import org.pk.entity.Pojazd;
 
@@ -51,7 +50,7 @@ public class KlientDao {
 
 		try {
 			tx = session.beginTransaction();
-			Query query=session.createQuery("FROM pojazd");
+			Query query=session.createQuery("FROM pojazd p LEFT JOIN FETCH p.wypozyczenia w");
 
 			listaHulajnog= (List<Pojazd>) query.list();
 			tx.commit();

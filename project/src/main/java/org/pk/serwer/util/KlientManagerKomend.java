@@ -16,7 +16,9 @@ public class KlientManagerKomend {
 			break;
 			case "getList()":
 				System.out.println("Manager");
-				KlientDao.getInstance().getList();
+				doKlienta.writeObject(KlientDao.getInstance().getList());
+				doKlienta.flush();
+				System.out.println("Wyslalem hulajnogi uwu");
 				break;
 		default:
 			break;

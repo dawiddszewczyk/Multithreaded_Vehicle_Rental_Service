@@ -5,7 +5,6 @@ package org.pk.klient.fxcontrollers;
         import javafx.fxml.FXML;
         import javafx.scene.control.TableColumn;
         import javafx.scene.control.TableView;
-        import org.pk.entity.Hulajnoga;
         import org.pk.entity.Pojazd;
         import org.pk.klient.util.ConnectionBox;
 
@@ -33,7 +32,7 @@ public class ListController {
     void pobierzListe(ActionEvent event) throws IOException, ClassNotFoundException {
         ConnectionBox.getInstance().getDoSerwera().writeObject("getList()");
 
-        System.out.print(ConnectionBox.getInstance().getOdSerwera().readObject());
+        listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
 
         ConnectionBox.getInstance().getDoSerwera().flush();
         for(Pojazd temp:listaHulajnog){

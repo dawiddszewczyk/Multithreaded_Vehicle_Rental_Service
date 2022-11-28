@@ -1,5 +1,7 @@
 package org.pk.entity;
 
+import javafx.beans.property.SimpleStringProperty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,24 +29,30 @@ public class Pojazd implements Serializable {
 	private double stanBaterii;
 	@Column(name="licznikkm")
 	private double licznikkm;
-	
+
 	@OneToMany(
 		mappedBy = "pojazd",
 		cascade = CascadeType.ALL
 	)
 	private List<Wypozyczenie> wypozyczenia;
+
 	
 	public Pojazd(int id, String nazwa, double stanBaterii, double licznikkm) {
 		this.id = id;
 		this.nazwa = nazwa;
 		this.stanBaterii = stanBaterii;
 		this.licznikkm = licznikkm;
+
 	}
 	
 	public Pojazd(String nazwa, double stanBaterii, double licznikkm) {
 		this.nazwa = nazwa;
 		this.stanBaterii = stanBaterii;
 		this.licznikkm = licznikkm;
+	}
+
+	public Pojazd() {
+
 	}
 
 	public int getId() {

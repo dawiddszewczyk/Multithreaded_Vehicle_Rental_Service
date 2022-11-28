@@ -14,6 +14,10 @@ public class KlientManagerKomend {
 			KlientDao.getInstance().stworzKlienta((Klient)odKlienta.readObject());
 			System.out.println("Pomyslnie utworzono klienta!");
 			break;
+			case "getList()":
+				System.out.println("Manager");
+				KlientDao.getInstance().getList();
+				break;
 		default:
 			break;
 		}

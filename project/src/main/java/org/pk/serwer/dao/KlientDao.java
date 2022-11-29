@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.password4j.BcryptFunction;
 import com.password4j.Password;
+import org.pk.entity.Wypozyczenie;
 
 public class KlientDao {
 
@@ -48,7 +49,57 @@ public class KlientDao {
 		sesja.getTransaction().commit();
 		sesja.close();
 	}
+	public void stworzWypozyczenia(Wypozyczenie wypozyczenie) {
+		Session sesja = fabrykaSesji.getCurrentSession();
+		sesja.beginTransaction();
 
+		try {
+			sesja.save(wypozyczenie);
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
+		}
+
+		sesja.getTransaction().commit();
+		sesja.close();
+	}
+	public void stworzPojazd(Pojazd pojazd){
+		System.out.println("Debug DAO");
+		List<Pojazd> listaHulajnog=null;
+
+		Session session = fabrykaSesji.getCurrentSession();
+		Transaction tx = null;
+
+		try {
+			tx = session.beginTransaction();
+			session.createQuery("UPDATE pojazd p SET p.stanBaterii=:pojazdStanBaterii, p.licznikkm=:pojazdZasiegKm WHERE p.id=:pojazdId")
+					.setParameter("pojazdId",pojazd.getId())
+					.setParameter("pojazdStanBaterii",pojazd.getStanBaterii())
+					.setParameter("pojazdZasiegKm",pojazd.getLicznikkm())
+					.executeUpdate();
+			tx.commit();
+		}
+		catch (Exception e) {
+			if (tx!=null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		/*
+		Session sesja = fabrykaSesji.getCurrentSession();
+		sesja.beginTransaction();
+
+		try {
+			Query query = sesja.createQuery("UPDATE pojazd p SET p.stanBaterii=pojazd.stanBaterii, p.licznikkm=pojazd.licznikkm WHERE p.id=pojazd.id");
+		}catch(NoResultException wyjatekNRE) {
+			System.out.println("Nie znaleziono podanego adresu email");
+		}catch(Exception wyjatek) {
+			wyjatek.printStackTrace();
+		}
+
+		sesja.getTransaction().commit();
+		sesja.close();
+		 */
+	}
 	public String pobierzEmail(String podanyEmail) {
 		String emailZBazy="";
 		Session sesja = fabrykaSesji.getCurrentSession();
@@ -103,7 +154,7 @@ public class KlientDao {
 
 		try {
 			tx = session.beginTransaction();
-			Query query=session.createQuery("SELECT p FROM pojazd p LEFT JOIN FETCH klient_pojazd k ON p.id=k.id WHERE k.dataZwr IS NULL");
+			Query query=session.createQuery("FROM pojazd p WHERE p.id NOT IN (SELECT k.pojazd.id FROM klient_pojazd k WHERE k.dataZwr IS NULL) AND p.stanBaterii > 0");
 
 			listaHulajnog= (List<Pojazd>) query.getResultList();
 			tx.commit();
@@ -115,5 +166,30 @@ public class KlientDao {
 			session.close();
 		}
 		return listaHulajnog;
+	}
+	public void wyslijWypozyczenie(int id,Pojazd temp){
+		System.out.println("Debug DAO");
+
+		Session session = fabrykaSesji.getCurrentSession();
+		Transaction tx = null;
+		int tempId=temp.getId();
+		try {
+			tx = session.beginTransaction();
+			session.createQuery("INSERT INTO klient_pojazd (klient,pojazd) " +
+					"values (id,tempId)")
+					.executeUpdate();
+
+			tx.commit();
+		}
+		catch (Exception e) {
+			if (tx!=null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+	}
+
+	public void zaktualizujWypozyczenie(){
+
 	}
 }

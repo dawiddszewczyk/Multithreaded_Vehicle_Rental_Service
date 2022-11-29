@@ -12,8 +12,11 @@ package org.pk.klient.fxcontrollers;
         import javafx.scene.control.TableView;
         import javafx.scene.input.MouseEvent;
         import javafx.stage.Stage;
+        import org.pk.entity.Klient;
         import org.pk.entity.Pojazd;
+        import org.pk.entity.Wypozyczenie;
         import org.pk.klient.util.ConnectionBox;
+        import org.pk.serwer.dao.KlientDao;
 
         import java.io.IOException;
         import java.util.List;
@@ -42,6 +45,7 @@ public class ListController {
     private List<Pojazd> listaHulajnog;
     private Pojazd wybranyPojazd;
     @FXML
+
     void pobierzListe(ActionEvent event) throws IOException, ClassNotFoundException {
         ConnectionBox.getInstance().getDoSerwera().writeObject("getList()");
 
@@ -75,6 +79,17 @@ public class ListController {
     					
     					ScooterController scooterController=loader.getController();
     					scooterController.ustawWartosci(wybranyPojazd);
+
+                        Klient tempKlient=ConnectionBox.getInstance().getKlient();
+                        Wypozyczenie tempWypozyczenie = new Wypozyczenie(tempKlient,wybranyPojazd);
+                        stage.setUserData(tempWypozyczenie);
+                        try {
+                            ConnectionBox.getInstance().getDoSerwera().writeObject("stworzWypozyczenie()");
+                            ConnectionBox.getInstance().getDoSerwera().writeObject(tempWypozyczenie);
+                            ConnectionBox.getInstance().getDoSerwera().flush();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
     					try {
     						scooterController.zmienStan(wybranyPojazd);
     					} catch (InterruptedException e) {
@@ -84,6 +99,7 @@ public class ListController {
     					stage.show();
     				});
     			}
+
     		}
     	};
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);

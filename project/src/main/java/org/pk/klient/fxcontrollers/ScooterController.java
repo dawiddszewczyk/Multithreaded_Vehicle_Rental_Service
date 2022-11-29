@@ -10,10 +10,15 @@ import org.pk.entity.Pojazd;
 import org.pk.klient.util.ConnectionBox;
 import org.pk.klient.util.ObecneWypozyczenieFTask;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.Math.round;
+
 public class ScooterController {
+    private Stage stage;
     @FXML
     private TextField TextAreaBattery;
 
@@ -32,25 +37,29 @@ public class ScooterController {
         TextAreaRange.setText(Double.toString(temp.getLicznikkm()));
     }
     public void zmienStan(Pojazd temp) throws InterruptedException {
-    	/*
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(()->
-                {
-                    ustawWartosci(temp);
-                });
-                System.out.println("eldo");
-            }
-        },0,1000L);
-    	*/
     	Runnable watek = () ->{
     		while(!Thread.currentThread().isInterrupted()) {
     			try {
 					Thread.sleep(1000);
+                    if(temp.getStanBaterii()<=0){
+                        ConnectionBox.getInstance().getWypozyczenie().cancel(true);
+                    }else{
+                        BigDecimal stanBaterii = BigDecimal.valueOf(temp.getStanBaterii()).subtract(new BigDecimal("1"));
+                        BigDecimal licznikKm = BigDecimal.valueOf(temp.getLicznikkm()).subtract(new BigDecimal("2"));
+                        temp.setStanBaterii(stanBaterii.doubleValue());
+                        temp.setLicznikkm(licznikKm.doubleValue());
+                    }
 				} catch (InterruptedException wyjatekIE) {
-					//wyjatekIE.printStackTrace();
-					return;
+                    try {
+                        wyjatekIE.printStackTrace();
+                        System.out.println(temp.getStanBaterii() + "   " + temp.getLicznikkm());
+                        ConnectionBox.getInstance().getDoSerwera().writeObject("stworzPojazd()");
+                        ConnectionBox.getInstance().getDoSerwera().writeObject(temp);
+                        ConnectionBox.getInstance().getDoSerwera().flush();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
 				}
     			Platform.runLater(()->{
     				ustawWartosci(temp);
@@ -62,4 +71,8 @@ public class ScooterController {
     	ConnectionBox.getInstance().setWypozyczenie(wypozyczenieFTask);
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(wypozyczenieFTask);
     }
+    public void zakonczWypozyczenie(){
+        ConnectionBox.getInstance().getWypozyczenie().cancel(true);
+    }
+
 }

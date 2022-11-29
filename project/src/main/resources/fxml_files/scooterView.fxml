@@ -29,7 +29,7 @@
       </AnchorPane>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <Button layoutX="273.0" layoutY="17.0" mnemonicParsing="false" text="Skończ" />
+            <Button layoutX="273.0" layoutY="17.0" mnemonicParsing="false" onAction="#zakonczWypozyczenie" text="Skończ" />
          </children>
       </AnchorPane>
    </items>

@@ -46,7 +46,7 @@ public class App extends Application {
 		}
 
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/fxml_files/ListView.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/fxml_files/AppView.fxml"));
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setTitle(TYTUL_APKI);

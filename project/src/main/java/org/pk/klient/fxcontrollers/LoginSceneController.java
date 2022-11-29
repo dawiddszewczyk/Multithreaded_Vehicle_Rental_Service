@@ -1,9 +1,6 @@
 package org.pk.klient.fxcontrollers;
 
 
-import static org.pk.util.StaleWartosci.LIST_VIEW_XML;
-import static org.pk.util.StaleWartosci.REGISTER_VIEW_XML;
-
 import java.io.IOException;
 
 import org.pk.entity.Klient;
@@ -19,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import static org.pk.util.StaleWartosci.*;
 
 public class LoginSceneController {	
 	
@@ -100,21 +99,32 @@ public class LoginSceneController {
 			}
 			
 			// Ustawienie w connectionBox idKlienta (jezeli logowanie powiodlo sie)
-			ConnectionBox.getInstance().setIdKlienta(klientZSerwera.getId());
+			ConnectionBox.getInstance().setIdKlienta(klientZSerwera.getId(),klientZSerwera);
 			
 			// --------- TO DO ---------
 			// do wyrzucenia po zaimplementowaniu przejscia do innej sceny (ten platform run later nizej)
 			Platform.runLater(()->regInfoLabel.setText("Login successful"));
 			// odkomentuj i wstaw w sciezke swoj fxml
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(LIST_VIEW_XML));
 			Platform.runLater(()->{
 				try {
-					kontener = FXMLLoader.load(getClass().getResource(LIST_VIEW_XML));
+					kontener = loader.load();
 				} catch (IOException wyjatekIo) {
 					wyjatekIo.printStackTrace();
 				}
 				stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
 				scene = new Scene(kontener);
 				stage.setScene(scene);
+
+				ListController listController = loader.getController();
+				try {
+					listController.pobierzListe(zdarzenie);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException(e);
+				}
+
 				stage.show();
 			});
 		};

@@ -3,6 +3,7 @@ package org.pk.entity;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -56,6 +57,11 @@ public class Pojazd implements Serializable {
 		this.licznikkm = licznikkm;
 	}
 
+	public void dodajWypozyczenie1S(Wypozyczenie wypozyczenie) {
+		if(wypozyczenia==null) wypozyczenia=new ArrayList<>();
+		wypozyczenia.add(wypozyczenie);
+	}
+	
 	public int getId() {
 		return id;
 	}

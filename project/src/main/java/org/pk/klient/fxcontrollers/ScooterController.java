@@ -52,7 +52,9 @@ public class ScooterController {
 				} catch (InterruptedException wyjatekIE) {
                     try {
                         wyjatekIE.printStackTrace();
-                        System.out.println(temp.getStanBaterii() + "   " + temp.getLicznikkm());
+                        System.out.println(temp.getId() +" "+temp.getStanBaterii() + "   " + temp.getLicznikkm());
+                        ConnectionBox.getInstance().getDoSerwera().flush();
+                        ConnectionBox.getInstance().getDoSerwera().reset();
                         ConnectionBox.getInstance().getDoSerwera().writeObject("stworzPojazd()");
                         ConnectionBox.getInstance().getDoSerwera().writeObject(temp);
                         ConnectionBox.getInstance().getDoSerwera().flush();

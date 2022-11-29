@@ -54,7 +54,7 @@ public class KlientDao {
 		sesja.beginTransaction();
 
 		try {
-			sesja.save(wypozyczenie);
+			sesja.merge(wypozyczenie);
 		}catch(Exception wyjatek) {
 			wyjatek.printStackTrace();
 		}
@@ -71,11 +71,16 @@ public class KlientDao {
 
 		try {
 			tx = session.beginTransaction();
+			/*
 			session.createQuery("UPDATE pojazd p SET p.stanBaterii=:pojazdStanBaterii, p.licznikkm=:pojazdZasiegKm WHERE p.id=:pojazdId")
 					.setParameter("pojazdId",pojazd.getId())
 					.setParameter("pojazdStanBaterii",pojazd.getStanBaterii())
 					.setParameter("pojazdZasiegKm",pojazd.getLicznikkm())
 					.executeUpdate();
+					*/
+			System.out.println("W UPDATE POJAZDU---"+ pojazd.getId() + " " + pojazd.getLicznikkm() + " " + pojazd.getStanBaterii());
+			session.saveOrUpdate(pojazd);
+			session.flush();
 			tx.commit();
 		}
 		catch (Exception e) {
@@ -127,7 +132,7 @@ public class KlientDao {
 		sesja.beginTransaction();
 
 		try {
-			Query query = sesja.createQuery("FROM klient K where K.email=:podanyEmail");
+			Query query = sesja.createQuery("FROM klient K LEFT JOIN FETCH K.wypozyczenia W where K.email=:podanyEmail",Klient.class);
 			query.setParameter("podanyEmail", podanyEmail);
 			klientZBazy = (Klient)query.getSingleResult();
 			// sprawdzanie hasla
@@ -154,7 +159,7 @@ public class KlientDao {
 
 		try {
 			tx = session.beginTransaction();
-			Query query=session.createQuery("FROM pojazd p WHERE p.id NOT IN (SELECT k.pojazd.id FROM klient_pojazd k WHERE k.dataZwr IS NULL) AND p.stanBaterii > 0");
+			Query query=session.createQuery("FROM pojazd p LEFT JOIN FETCH p.wypozyczenia WHERE p.id NOT IN (SELECT k.pojazd.id FROM klient_pojazd k WHERE k.dataZwr IS NULL) AND p.stanBaterii > 0");
 
 			listaHulajnog= (List<Pojazd>) query.getResultList();
 			tx.commit();

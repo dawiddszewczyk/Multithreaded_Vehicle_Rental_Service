@@ -82,14 +82,19 @@ public class ListController {
 
                         Klient tempKlient=ConnectionBox.getInstance().getKlient();
                         Wypozyczenie tempWypozyczenie = new Wypozyczenie(tempKlient,wybranyPojazd);
-                        stage.setUserData(tempWypozyczenie);
+                        tempKlient.dodajWypozyczenie2S(tempWypozyczenie);
+                        //stage.setUserData(tempWypozyczenie);
+                        
                         try {
+                        	
                             ConnectionBox.getInstance().getDoSerwera().writeObject("stworzWypozyczenie()");
                             ConnectionBox.getInstance().getDoSerwera().writeObject(tempWypozyczenie);
                             ConnectionBox.getInstance().getDoSerwera().flush();
+                            
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
+                        
     					try {
     						scooterController.zmienStan(wybranyPojazd);
     					} catch (InterruptedException e) {

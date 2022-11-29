@@ -91,6 +91,14 @@ public class Klient implements Serializable {
 			}
 		}
 	}
+	
+	public void dodajWypozyczenie2S(Wypozyczenie wypozyczenie) {
+		if(wypozyczenie==null) wypozyczenia = new ArrayList<>();
+		wypozyczenia.add(wypozyczenie);
+		wypozyczenie.getPojazd().dodajWypozyczenie1S(wypozyczenie);
+		
+	}
+	
 	public int getId() {
 		return id;
 	}

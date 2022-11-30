@@ -20,8 +20,12 @@ public class KlientManagerKomend {
 				KlientDao.getInstance().stworzWypozyczenia((Wypozyczenie) odKlienta.readObject());
 				System.out.println("Pomyslnie utworzono wypozyczenia!");
 				break;
-			case "stworzPojazd()":
-				KlientDao.getInstance().stworzPojazd((Pojazd) odKlienta.readObject());
+			case "zaktualizujPojazd()":
+				KlientDao.getInstance().zaktualizujPojazd((Pojazd) odKlienta.readObject());
+				System.out.println("Pomyslnie utworzono pojazd!");
+				break;
+			case "zaktualizujWypozyczenie()":
+				KlientDao.getInstance().zaktualizujWypozyczenie((Wypozyczenie) odKlienta.readObject());
 				System.out.println("Pomyslnie utworzono pojazd!");
 				break;
 		case "pobierzEmail()":
@@ -41,6 +45,9 @@ public class KlientManagerKomend {
 				doKlienta.writeObject(KlientDao.getInstance().getList());
 				doKlienta.flush();
 				System.out.println("Wyslalem hulajnogi uwu");
+				break;
+			case "wyslijWypozyczenie()":
+
 				break;
 		default:
 			break;

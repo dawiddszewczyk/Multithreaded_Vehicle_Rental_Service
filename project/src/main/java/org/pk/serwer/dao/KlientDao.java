@@ -52,9 +52,10 @@ public class KlientDao {
 	public void stworzWypozyczenia(Wypozyczenie wypozyczenie) {
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
-
+		Wypozyczenie tempWyp=null;
 		try {
-			sesja.merge(wypozyczenie);
+			tempWyp=(Wypozyczenie)sesja.merge(wypozyczenie);
+			wypozyczenie.setId(tempWyp.getId());
 		}catch(Exception wyjatek) {
 			wyjatek.printStackTrace();
 		}
@@ -62,7 +63,7 @@ public class KlientDao {
 		sesja.getTransaction().commit();
 		sesja.close();
 	}
-	public void stworzPojazd(Pojazd pojazd){
+	public void zaktualizujPojazd(Pojazd pojazd){
 		System.out.println("Debug DAO");
 		List<Pojazd> listaHulajnog=null;
 
@@ -104,6 +105,26 @@ public class KlientDao {
 		sesja.getTransaction().commit();
 		sesja.close();
 		 */
+	}
+	public void zaktualizujWypozyczenie(Wypozyczenie wypozyczenie){
+		System.out.println("Debug DAO");
+
+		Session session = fabrykaSesji.getCurrentSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			System.out.println(wypozyczenie.getId() + " " + wypozyczenie.getKlient().getId() + " " + wypozyczenie.getPojazd().getId() + " " +wypozyczenie.getDataWyp() + " " + wypozyczenie.getDataZwr());
+			System.out.println("Aktualizuj Wypozyczenie");
+			session.saveOrUpdate(wypozyczenie);
+			session.flush();
+			tx.commit();
+		}
+		catch (Exception e) {
+			if (tx!=null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
 	}
 	public String pobierzEmail(String podanyEmail) {
 		String emailZBazy="";
@@ -171,30 +192,5 @@ public class KlientDao {
 			session.close();
 		}
 		return listaHulajnog;
-	}
-	public void wyslijWypozyczenie(int id,Pojazd temp){
-		System.out.println("Debug DAO");
-
-		Session session = fabrykaSesji.getCurrentSession();
-		Transaction tx = null;
-		int tempId=temp.getId();
-		try {
-			tx = session.beginTransaction();
-			session.createQuery("INSERT INTO klient_pojazd (klient,pojazd) " +
-					"values (id,tempId)")
-					.executeUpdate();
-
-			tx.commit();
-		}
-		catch (Exception e) {
-			if (tx!=null) tx.rollback();
-			e.printStackTrace();
-		} finally {
-			session.close();
-		}
-	}
-
-	public void zaktualizujWypozyczenie(){
-
 	}
 }

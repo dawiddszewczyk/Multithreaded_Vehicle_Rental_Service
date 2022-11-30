@@ -48,14 +48,15 @@ public class ListController {
 
     void pobierzListe(ActionEvent event) throws IOException, ClassNotFoundException {
         ConnectionBox.getInstance().getDoSerwera().writeObject("getList()");
-
-        listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
-
         ConnectionBox.getInstance().getDoSerwera().flush();
+        listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
+        // Stream bug? Czyszczenie strumienia poprzez dodatkowy odczyt
+        ConnectionBox.getInstance().getOdSerwera().readObject();
         tv.getItems().clear();
         for(Pojazd temp:listaHulajnog){
             tv.getItems().add(temp);
         }
+
     }
     @FXML
     public void wybierzPojazd(MouseEvent event) {
@@ -82,18 +83,19 @@ public class ListController {
 
                         Klient tempKlient=ConnectionBox.getInstance().getKlient();
                         Wypozyczenie tempWypozyczenie = new Wypozyczenie(tempKlient,wybranyPojazd);
-                        System.out.println("Pierwsze " + tempWypozyczenie.toString());
+                        System.out.println("Pierwsze " + tempWypozyczenie);
                         tempKlient.dodajWypozyczenie2S(tempWypozyczenie);
-                        System.out.println("Drugie " + tempKlient.getWypozyczenia().get(tempKlient.getWypozyczenia().size()-1).toString());
+                        //System.out.println("Drugie " + tempKlient.getWypozyczenia().get(tempKlient.getWypozyczenia().size()-1).toString());
 
                         //stage.setUserData(tempWypozyczenie);
 
                         try {
                             ConnectionBox.getInstance().getDoSerwera().writeObject("stworzWypozyczenie()");
-                            System.out.println(tempWypozyczenie);
                             ConnectionBox.getInstance().getDoSerwera().writeObject(tempWypozyczenie);
                             ConnectionBox.getInstance().getDoSerwera().flush();
-                        } catch (IOException e) {
+                            tempWypozyczenie.setId(((Wypozyczenie)ConnectionBox.getInstance().getOdSerwera().readObject()).getId());
+                            System.out.println("Stan wypozyczenia po zapisaniu w bazie i otrzymaniu id: "+ tempWypozyczenie);
+                        } catch (IOException | ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
 

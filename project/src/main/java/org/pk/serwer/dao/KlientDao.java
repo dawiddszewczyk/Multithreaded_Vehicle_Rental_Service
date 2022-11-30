@@ -49,19 +49,21 @@ public class KlientDao {
 		sesja.getTransaction().commit();
 		sesja.close();
 	}
-	public void stworzWypozyczenia(Wypozyczenie wypozyczenie) {
+	public Wypozyczenie stworzWypozyczenie(Wypozyczenie wypozyczenie) {
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
 		Wypozyczenie tempWyp=null;
 		try {
-			tempWyp=(Wypozyczenie)sesja.merge(wypozyczenie);
-			wypozyczenie.setId(tempWyp.getId());
+			wypozyczenie=(Wypozyczenie)sesja.merge(wypozyczenie);
+			//wypozyczenie.setId(tempWyp.getId());
 		}catch(Exception wyjatek) {
 			wyjatek.printStackTrace();
 		}
 
 		sesja.getTransaction().commit();
 		sesja.close();
+		
+		return wypozyczenie;
 	}
 	public void zaktualizujPojazd(Pojazd pojazd){
 		System.out.println("Debug DAO");

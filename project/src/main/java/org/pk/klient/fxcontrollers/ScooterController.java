@@ -55,8 +55,10 @@ public class ScooterController {
                     try {
                         wyjatekIE.printStackTrace();
                         //System.out.println(temp.getId() +" "+temp.getStanBaterii() + "   " + temp.getLicznikkm());
-                        temp.getPojazd().getWypozyczenia().get(temp.getPojazd().getWypozyczenia().size()-1).setDataZwr(new Date(System.currentTimeMillis()));
-                        System.out.println(temp.getPojazd().getWypozyczenia().get(temp.getPojazd().getWypozyczenia().size()-1).toString());
+                        //temp.getPojazd().getWypozyczenia().get(temp.getPojazd().getWypozyczenia().size()-1).setDataZwr(new Date(System.currentTimeMillis()));
+                        temp.setDataZwr(new Date(System.currentTimeMillis()));
+                        //System.out.println(temp.getPojazd().getWypozyczenia().get(temp.getPojazd().getWypozyczenia().size()-1).toString());
+                        System.out.println("WYPOZYCZENIE PO ZAKONCZENIU:"+temp.getDataZwr()+" "+temp.getId());
                         ConnectionBox.getInstance().getDoSerwera().flush();
                         ConnectionBox.getInstance().getDoSerwera().reset();
                         ConnectionBox.getInstance().getDoSerwera().writeObject("zaktualizujPojazd()");

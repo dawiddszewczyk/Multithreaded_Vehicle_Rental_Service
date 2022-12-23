@@ -11,20 +11,20 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="309.0" prefWidth="599.0">
          <children>
-            <TextField fx:id="emailField" layoutX="207.0" layoutY="124.0" />
-            <Button layoutX="205.0" layoutY="225.0" mnemonicParsing="false" onAction="#logowanie" prefHeight="26.0" prefWidth="150.0" text="Log In" />
             <Label layoutX="28.0" layoutY="14.0" text="Log In" />
             <Label layoutX="207.0" layoutY="106.0" text="Email" />
-            <Label layoutX="208.0" layoutY="158.0" text="Password" />
-            <Label fx:id="regInfoLabel" contentDisplay="CENTER" layoutX="205.0" layoutY="273.0" prefHeight="17.0" prefWidth="238.0" textAlignment="CENTER" />
-            <PasswordField fx:id="passwdField" layoutX="207.0" layoutY="175.0" />
             <Label fx:id="emailLabel" layoutX="362.0" layoutY="128.0" />
+            <TextField fx:id="emailField" layoutX="207.0" layoutY="124.0" />
+            <Label layoutX="208.0" layoutY="158.0" text="Password" />
             <Label fx:id="passwdLabel" layoutX="362.0" layoutY="179.0" />
+            <PasswordField fx:id="passwdField" layoutX="207.0" layoutY="175.0" />
+            <Button layoutX="205.0" layoutY="225.0" mnemonicParsing="false" onAction="#logowanie" prefHeight="26.0" prefWidth="150.0" text="Log In" />
+            <Label fx:id="regInfoLabel" contentDisplay="CENTER" layoutX="205.0" layoutY="273.0" prefHeight="17.0" prefWidth="238.0" textAlignment="CENTER" />
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <Button layoutX="207.0" layoutY="25.0" mnemonicParsing="false" onAction="#przejdzDoRejestracji" prefHeight="26.0" prefWidth="150.0" text="Sign Up" />
             <Label layoutX="26.0" layoutY="16.0" text="New user?" />
+            <Button layoutX="207.0" layoutY="25.0" mnemonicParsing="false" onAction="#przejdzDoRejestracji" prefHeight="26.0" prefWidth="150.0" text="Sign Up" />
          </children></AnchorPane>
   </items>
 </SplitPane>

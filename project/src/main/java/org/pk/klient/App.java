@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
 import javafx.fxml.FXMLLoader;
+import org.pk.entity.Klient;
 import org.pk.klient.util.ConnectionBox;
 
 import javafx.application.Application;
@@ -18,6 +19,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
+/**
+ * JavaFX App
+ */
 public class App extends Application {
 
     @Override
@@ -28,7 +33,7 @@ public class App extends Application {
 		ObjectInputStream odSerwera= null;
 		@SuppressWarnings("unused")
 		ExecutorService wykonawcaPolaczenia = null;
-		
+
     	try {
     		serwer = new Socket("localhost",NUMER_PORTU);
 			doSerwera = new ObjectOutputStream(serwer.getOutputStream());
@@ -36,11 +41,12 @@ public class App extends Application {
 			ConnectionBox.getInstance(odSerwera,doSerwera,serwer); // instancjonowanie logiki polaczen w formie singletona
 
     	}catch (Exception wyjatek) {
+			System.out.println("Wyjatek od strony klienta!");
 			wyjatek.printStackTrace();
 		}
 
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource(APP_VIEW_XML));
+			Parent root = FXMLLoader.load(getClass().getResource("/fxml_files/AppView.fxml"));
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setTitle(TYTUL_APKI);
@@ -49,9 +55,11 @@ public class App extends Application {
 		} catch (IOException wyjatekIO) {
 			wyjatekIO.printStackTrace();
 		}
+
     }
 
     public static void main(String[] args) {
         launch();
     }
+
 }

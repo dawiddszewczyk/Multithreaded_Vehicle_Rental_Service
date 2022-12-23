@@ -1,6 +1,9 @@
 package org.pk.entity;
 
+import javafx.beans.property.SimpleStringProperty;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -27,12 +30,13 @@ public class Pojazd implements Serializable {
 	private double stanBaterii;
 	@Column(name="licznikkm")
 	private double licznikkm;
-	
+
 	@OneToMany(
 		mappedBy = "pojazd",
 		cascade = CascadeType.ALL
 	)
 	private List<Wypozyczenie> wypozyczenia;
+
 	
 	// Pusty konstruktor dla Hibernate
 	public Pojazd() {
@@ -44,6 +48,7 @@ public class Pojazd implements Serializable {
 		this.nazwa = nazwa;
 		this.stanBaterii = stanBaterii;
 		this.licznikkm = licznikkm;
+
 	}
 	
 	public Pojazd(String nazwa, double stanBaterii, double licznikkm) {
@@ -52,6 +57,11 @@ public class Pojazd implements Serializable {
 		this.licznikkm = licznikkm;
 	}
 
+	public void dodajWypozyczenie1S(Wypozyczenie wypozyczenie) {
+		if(wypozyczenia==null) wypozyczenia=new ArrayList<>();
+		wypozyczenia.add(wypozyczenie);
+	}
+	
 	public int getId() {
 		return id;
 	}

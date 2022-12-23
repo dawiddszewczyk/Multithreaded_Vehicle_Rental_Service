@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.pk.entity.Klient;
+import org.pk.entity.Pojazd;
+import org.pk.entity.Wypozyczenie;
 import org.pk.serwer.dao.KlientDao;
 
 public class KlientManagerKomend {
@@ -12,7 +14,25 @@ public class KlientManagerKomend {
 		switch (komenda) {
 		case "stworzKlienta()":
 			KlientDao.getInstance().stworzKlienta((Klient)odKlienta.readObject());
+			System.out.println("Pomyslnie utworzono klienta!");
 			break;
+			case "stworzWypozyczenie()":
+				Wypozyczenie dbWypozyczenie = KlientDao.getInstance().stworzWypozyczenie((Wypozyczenie) odKlienta.readObject());
+				System.out.println("Pomyslnie utworzono wypozyczenie!");
+				System.out.println(dbWypozyczenie);
+				doKlienta.flush();
+				doKlienta.reset();
+				doKlienta.writeObject(dbWypozyczenie);
+				doKlienta.flush();
+				break;
+			case "zaktualizujPojazd()":
+				KlientDao.getInstance().zaktualizujPojazd((Pojazd) odKlienta.readObject());
+				System.out.println("Pomyslnie utworzono pojazd!");
+				break;
+			case "zaktualizujWypozyczenie()":
+				KlientDao.getInstance().zaktualizujWypozyczenie((Wypozyczenie) odKlienta.readObject());
+				System.out.println("Pomyslnie utworzono pojazd!");
+				break;
 		case "pobierzEmail()":
 			String emailZSerwera = KlientDao.getInstance().pobierzEmail((String)odKlienta.readObject());
 			doKlienta.writeObject(emailZSerwera);
@@ -25,6 +45,17 @@ public class KlientManagerKomend {
 										   			.logowanie(emailOdKlienta,hasloOdKlienta);
 			doKlienta.writeObject(pobranyKlientZSerwera);
 			doKlienta.flush();
+			case "getList()":
+				System.out.println("Manager");
+				doKlienta.writeObject(KlientDao.getInstance().getList());
+				doKlienta.flush();
+				System.out.println("Wyslalem hulajnogi uwu");
+				doKlienta.reset();
+				doKlienta.flush();
+				break;
+			case "wyslijWypozyczenie()":
+
+				break;
 		default:
 			break;
 		}

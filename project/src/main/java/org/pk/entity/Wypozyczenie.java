@@ -83,5 +83,10 @@ public class Wypozyczenie implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Wypozyczenie [idW=" + id + ", idK=" + klient.getId() + ", idP=" + pojazd.getId() + ", dataW=" + dataWyp + ", DataZ="
+				+ dataZwr + "]";
+	}
 }

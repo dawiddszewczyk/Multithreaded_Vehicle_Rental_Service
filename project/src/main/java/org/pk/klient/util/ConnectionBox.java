@@ -1,5 +1,7 @@
 package org.pk.klient.util;
 
+import org.pk.entity.Klient;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,7 +16,9 @@ public class ConnectionBox {
 	private ObjectInputStream odSerwera;
 	private ObjectOutputStream doSerwera;
 	private int idKlienta;
+	private Klient klient;
 	private ExecutorService wykonawcaGlobalny;
+	private ObecneWypozyczenieFTask<?> wypozyczenie;
 	
 	
 	private ConnectionBox(ObjectInputStream odSerwera, ObjectOutputStream doSerwera, Socket polaczenieSerwer) {
@@ -22,6 +26,7 @@ public class ConnectionBox {
 		this.doSerwera=doSerwera;
 		this.polaczenieSerwer = polaczenieSerwer;
 		this.idKlienta=-1;
+		this.klient=null;
 		this.wykonawcaGlobalny=Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	}
 	
@@ -47,8 +52,13 @@ public class ConnectionBox {
 		return idKlienta;
 	}
 
-	public void setIdKlienta(int idKlienta) {
+	public Klient getKlient() {
+		return klient;
+	}
+
+	public void setIdKlienta(int idKlienta,Klient klient) {
 		this.idKlienta = idKlienta;
+		this.klient=klient;
 	}
 
 	public Socket getPolaczenieSerwer() {
@@ -63,6 +73,14 @@ public class ConnectionBox {
 		this.wykonawcaGlobalny = wykonawcaGlobalny;
 	}
 	
+	public ObecneWypozyczenieFTask<?> getWypozyczenie() {
+		return wypozyczenie;
+	}
+
+	public void setWypozyczenie(ObecneWypozyczenieFTask<?> wypozyczenie) {
+		this.wypozyczenie = wypozyczenie;
+	}
+
 	public void zamknijPolaczenia() {
 		this.wykonawcaGlobalny.shutdownNow();
 		try {

@@ -3,20 +3,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.image.Image?>
-<SplitPane dividerPositions="0.8442211055276382" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pk.klient.fxcontrollers.ScooterController">
+<SplitPane dividerPositions="0.8442211055276382" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pk.klient.fxcontrollers.HulajnogaController">
    <items>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <ImageView fitHeight="242.0" fitWidth="401.0" layoutX="14.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="/png_files/scooter.png"/>
-               </image>
-            </ImageView>
             <TextField fx:id="TextAreaBattery" editable="false" layoutX="362.0" layoutY="218.0" />
             <TextField fx:id="TextAreaName" editable="false" layoutX="362.0" layoutY="170.0" />
             <TextField fx:id="TextAreaId" editable="false" layoutX="362.0" layoutY="119.0" />

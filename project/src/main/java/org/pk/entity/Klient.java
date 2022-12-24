@@ -3,10 +3,12 @@ package org.pk.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,6 +35,7 @@ public class Klient implements Serializable {
 	private String haslo;
 	
 	@OneToMany(
+		fetch = FetchType.LAZY,
 		mappedBy = "klient",
 		cascade = CascadeType.ALL
 	)
@@ -142,4 +145,23 @@ public class Klient implements Serializable {
 		return "Klient [id=" + id + ", imie=" + imie + ", nazwisko=" + nazwisko + ", email=" + email + ", wypozyczenia="
 				+ wypozyczenia + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Klient other = (Klient) obj;
+		return id == other.id;
+	}
+	
+	
 }

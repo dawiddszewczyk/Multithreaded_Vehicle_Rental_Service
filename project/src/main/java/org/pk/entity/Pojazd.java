@@ -1,14 +1,14 @@
 package org.pk.entity;
 
-import javafx.beans.property.SimpleStringProperty;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,6 +32,7 @@ public class Pojazd implements Serializable {
 	private double licznikkm;
 
 	@OneToMany(
+		fetch = FetchType.LAZY,
 		mappedBy = "pojazd",
 		cascade = CascadeType.ALL
 	)
@@ -97,4 +98,23 @@ public class Pojazd implements Serializable {
 		return "Pojazd [id=" + id + ", nazwa=" + nazwa + ", stanBaterii=" + stanBaterii + ", licznikkm=" + licznikkm
 				+ ", wypozyczenia=" + wypozyczenia + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pojazd other = (Pojazd) obj;
+		return id == other.id;
+	}
+	
+	
 }

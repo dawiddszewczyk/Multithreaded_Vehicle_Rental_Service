@@ -1,6 +1,5 @@
 package org.pk.klient;
 
-import static org.pk.util.StaleWartosci.APP_VIEW_XML;
 import static org.pk.util.StaleWartosci.NUMER_PORTU;
 import static org.pk.util.StaleWartosci.TYTUL_APKI;
 
@@ -11,7 +10,6 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
 import javafx.fxml.FXMLLoader;
-import org.pk.entity.Klient;
 import org.pk.klient.util.ConnectionBox;
 
 import javafx.application.Application;

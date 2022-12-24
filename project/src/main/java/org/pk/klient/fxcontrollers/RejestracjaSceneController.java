@@ -75,6 +75,7 @@ public class RejestracjaSceneController {
 		cPasswdLabel.setText(null);
 	}
 	
+	@FXML
 	public void wykonajRejestracje(ActionEvent zdarzenie) throws IOException, ClassNotFoundException, InterruptedException {
 		Runnable watek = ()->{
 			// Wstepny clear labelow w razie N-tej proby rejestracji

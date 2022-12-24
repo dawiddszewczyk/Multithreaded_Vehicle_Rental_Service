@@ -56,7 +56,7 @@ public class ConnectionBox {
 		return klient;
 	}
 
-	public void setIdKlienta(int idKlienta,Klient klient) {
+	public void setKlientIIdKlienta(int idKlienta,Klient klient) {
 		this.idKlienta = idKlienta;
 		this.klient=klient;
 	}

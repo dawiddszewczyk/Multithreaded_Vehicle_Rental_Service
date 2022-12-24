@@ -54,6 +54,8 @@ public class LoginSceneController {
 	public void udanaRejestracja(String wiadomosc){
 		regInfoLabel.setText(wiadomosc);
 	}
+	
+	@FXML
 	public void logowanie(ActionEvent zdarzenie) {
 		
 		Runnable watek = ()->{
@@ -99,12 +101,11 @@ public class LoginSceneController {
 			}
 			
 			// Ustawienie w connectionBox idKlienta (jezeli logowanie powiodlo sie)
-			ConnectionBox.getInstance().setIdKlienta(klientZSerwera.getId(),klientZSerwera);
+			ConnectionBox.getInstance().setKlientIIdKlienta(klientZSerwera.getId(),klientZSerwera);
 			
-			// --------- TO DO ---------
-			// do wyrzucenia po zaimplementowaniu przejscia do innej sceny (ten platform run later nizej)
 			Platform.runLater(()->regInfoLabel.setText("Login successful"));
-			// odkomentuj i wstaw w sciezke swoj fxml
+
+			// inicjalizacja listy z dostepnymi pojazdami
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(LIST_VIEW_XML));
 			Platform.runLater(()->{
 				try {
@@ -117,13 +118,8 @@ public class LoginSceneController {
 				stage.setScene(scene);
 
 				ListController listController = loader.getController();
-				try {
-					listController.pobierzListe(zdarzenie);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				} catch (ClassNotFoundException e) {
-					throw new RuntimeException(e);
-				}
+				listController.pobierzListe(zdarzenie);
+
 
 				stage.show();
 			});

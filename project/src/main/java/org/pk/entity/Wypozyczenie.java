@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Table(name="klient_pojazd")
-@Entity(name="klient_pojazd")
+@Entity
 public class Wypozyczenie implements Serializable {
 	
 	@Id

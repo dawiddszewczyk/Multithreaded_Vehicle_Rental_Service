@@ -46,16 +46,28 @@ public class PojazdDao {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Pojazd> getListaPojazdow(){
+	public List<Pojazd> getListaPojazdow(int idPojazdu, boolean uzyjId){
 		List<Pojazd> listaHulajnog=null;
 
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
 
 		try {
-			Query query=sesja.createQuery("select distinct p from pojazd p LEFT JOIN FETCH p.wypozyczenia "
-					+ "WHERE p.id NOT IN (SELECT k.pojazd.id FROM klient_pojazd k WHERE k.dataZwr IS NULL) AND p.stanBaterii > 0", 
-					Pojazd.class);
+			Query query = null;
+			if(!uzyjId)
+				query = sesja.createQuery("select distinct p from Pojazd p LEFT JOIN FETCH p.wypozyczenia "
+						+ "WHERE p.id NOT IN (SELECT k.pojazd.id FROM Wypozyczenie k WHERE k.dataZwr IS NULL) "
+						+ "AND p.stanBaterii > 0", 
+						Pojazd.class);
+			else {
+				query = sesja.createQuery("select distinct p from Pojazd p LEFT JOIN FETCH p.wypozyczenia "
+						+ "WHERE p.id NOT IN (SELECT k.pojazd.id FROM Wypozyczenie k WHERE k.dataZwr IS NULL) "
+						+ "AND p.stanBaterii > 0 "
+						+ "AND p.id=:idPojazdu", 
+						Pojazd.class);
+				query.setParameter("idPojazdu", idPojazdu);
+				System.out.println("W drugiej czesci");
+			}
 			listaHulajnog= (List<Pojazd>) query.getResultList();
 		}
 		catch (Exception wyjatek) {
@@ -66,4 +78,7 @@ public class PojazdDao {
 		sesja.close();
 		return listaHulajnog;
 	}
+	
+	
+	
 }

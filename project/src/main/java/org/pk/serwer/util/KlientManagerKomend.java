@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import org.pk.entity.Klient;
 import org.pk.entity.Pojazd;
 import org.pk.entity.Wypozyczenie;
+import org.pk.klient.util.ConnectionBox;
 import org.pk.serwer.dao.KlientDao;
 import org.pk.serwer.dao.PojazdDao;
 import org.pk.serwer.dao.WypozyczenieDao;
@@ -24,8 +25,11 @@ public class KlientManagerKomend {
 			case "stworzWypozyczenie()":
 				Wypozyczenie dbWypozyczenie = WypozyczenieDao.getInstance().stworzWypozyczenie((Wypozyczenie) odKlienta.readObject());
 				System.out.println("Pomyslnie utworzono wypozyczenie!");
+				doKlienta.flush();
+				doKlienta.reset();
 				doKlienta.writeObject(dbWypozyczenie);
 				doKlienta.flush();
+				doKlienta.reset();
 				break;
 				
 			case "zaktualizujPojazd()":
@@ -40,8 +44,11 @@ public class KlientManagerKomend {
 				
 			case "pobierzEmail()":
 				String emailZSerwera = KlientDao.getInstance().pobierzEmail((String)odKlienta.readObject());
+				doKlienta.flush();
+				doKlienta.reset();
 				doKlienta.writeObject(emailZSerwera);
 				doKlienta.flush();
+				doKlienta.reset();
 				break;
 				
 			case "logowanie()":
@@ -49,14 +56,37 @@ public class KlientManagerKomend {
 				String hasloOdKlienta = (String) odKlienta.readObject();
 				Klient pobranyKlientZSerwera = KlientDao.getInstance()
 						.logowanie(emailOdKlienta,hasloOdKlienta);
+				doKlienta.flush();
+				doKlienta.reset();
 				doKlienta.writeObject(pobranyKlientZSerwera);
 				doKlienta.flush();
+				doKlienta.reset();
 				
-			case "getListaPojazdow()":
-				doKlienta.writeObject(PojazdDao.getInstance().getListaPojazdow());
+			case "getListaPojazdow(false)":
 				doKlienta.flush();
+				doKlienta.reset();
+				doKlienta.writeObject(PojazdDao.getInstance().getListaPojazdow(0,false));
+				doKlienta.flush();
+				doKlienta.reset();
+				break;
+			
+			case "getListaPojazdow(true)":
+				int idPojazdu = (int) odKlienta.readObject();
+				doKlienta.flush();
+				doKlienta.reset();
+				doKlienta.writeObject(PojazdDao.getInstance().getListaPojazdow(idPojazdu, true));
+				doKlienta.flush();
+				doKlienta.reset();
 				break;
 				
+			case "sprawdzDostepnosc()":
+				doKlienta.flush();
+				doKlienta.reset();
+				doKlienta.writeObject(
+						WypozyczenieDao.getInstance()
+						.sprawdzDostepnosc((Pojazd)odKlienta.readObject()));
+				doKlienta.flush();
+				doKlienta.reset();
 			default:
 				break;
 		}

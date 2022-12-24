@@ -47,6 +47,7 @@ public class HulajnogaController {
     }
     
     public void zmienStan(Wypozyczenie temp) throws InterruptedException {
+    	
     	Runnable watek = () ->{
     		while(!Thread.currentThread().isInterrupted()) {
     			try {
@@ -82,14 +83,14 @@ public class HulajnogaController {
     		}
     	};
     	ObecneWypozyczenieFTask<?> wypozyczenieFTask = new ObecneWypozyczenieFTask<>(watek, null);
-    	ConnectionBox.getInstance().setWypozyczenie(wypozyczenieFTask);
+    	ConnectionBox.getInstance().setWypozyczenieFt(wypozyczenieFTask);
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(wypozyczenieFTask);
     }
     
     @FXML
     public void zakonczWypozyczenie(ActionEvent zdarzenie){
     	Runnable watek = () -> {
-    		ConnectionBox.getInstance().getWypozyczenie().cancel(true);
+    		ConnectionBox.getInstance().getWypozyczenieFt().cancel(true);
     		
 			// inicjalizacja listy z dostepnymi pojazdami
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(LIST_VIEW_XML));

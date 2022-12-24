@@ -50,7 +50,7 @@ public class KlientDao {
 		sesja.beginTransaction();
 
 		try {
-			Query query = sesja.createQuery("select K.email FROM klient K where K.email=:podanyEmail");
+			Query query = sesja.createQuery("select K.email FROM Klient K where K.email=:podanyEmail");
 			query.setParameter("podanyEmail",podanyEmail);
 			// zwroci wyjatek, jezeli od poczatku w bazie bedzie wiecej niz jeden taki sam mail!
 			emailZBazy = (String)query.getSingleResult();
@@ -72,7 +72,7 @@ public class KlientDao {
 		sesja.beginTransaction();
 
 		try {
-			Query query = sesja.createQuery("FROM klient K LEFT JOIN FETCH K.wypozyczenia W where K.email=:podanyEmail", Klient.class);
+			Query query = sesja.createQuery("FROM Klient K LEFT JOIN FETCH K.wypozyczenia W where K.email=:podanyEmail", Klient.class);
 			query.setParameter("podanyEmail", podanyEmail);
 			klientZBazy = (Klient)query.getSingleResult();
 			// sprawdzanie hasla

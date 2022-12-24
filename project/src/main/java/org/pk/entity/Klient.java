@@ -18,7 +18,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Table(name="klient")
-@Entity(name="klient")
+@Entity
 public class Klient implements Serializable {
 	
 	@Id

@@ -7,8 +7,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.pk.entity.Klient;
@@ -17,6 +23,8 @@ import org.pk.entity.Wypozyczenie;
 import org.pk.klient.util.ConnectionBox;
 import java.io.IOException;
 import java.util.List;
+
+import static org.pk.util.StaleWartosci.LIST_VIEW_XML;
 import static org.pk.util.StaleWartosci.SCOOTER_VIEW_XML;
 
 public class ListController {
@@ -38,17 +46,29 @@ public class ListController {
     @FXML
     private TableView<Pojazd> tv;
     
+    @FXML
+    private TextField idField;
+    
+    @FXML
+    private Label infoLabel;
+    
     private List<Pojazd> listaHulajnog;
     private Pojazd wybranyPojazd;
     
     @SuppressWarnings("unchecked")
 	@FXML
-    void pobierzListe(ActionEvent zdarzenie) {
+    public void pobierzListe(ActionEvent zdarzenie) {
     	
     	Runnable watek = () ->{
     		try {
-    			ConnectionBox.getInstance().getDoSerwera().writeObject("getListaPojazdow()");
+    			
+    			Platform.runLater(()->infoLabel.setText(""));
+    			
     			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
+    			ConnectionBox.getInstance().getDoSerwera().writeObject("getListaPojazdow(false)");
+    			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
     			
     			listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
     			tv.getItems().clear();
@@ -56,9 +76,62 @@ public class ListController {
     			for(Pojazd temp:listaHulajnog){
     				tv.getItems().add(temp);
     			}
+    			tv.refresh();
+    			
     		}catch (Exception wyjatek) {
 				wyjatek.printStackTrace();
 			}
+    	};
+    	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
+    }
+    
+    
+    @FXML
+	@SuppressWarnings("unchecked")
+    public void pobierzListeZId(ActionEvent zdarzenie) {
+		Runnable watek = () ->{
+    		
+    		String id = idField.getText();
+    		
+    		// usun wszystko co nie jest liczba z inputu
+    		if(!id.matches("//d*")) id.replaceAll("[^//d]", "");
+    		
+    		try {
+    			
+    			if(id.isBlank()) {
+    				tv.getItems().clear();
+    				tv.refresh();
+    				return;
+    			}
+    			
+    			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
+    			ConnectionBox.getInstance().getDoSerwera().writeObject("getListaPojazdow(true)");
+    			ConnectionBox.getInstance().getDoSerwera().writeObject(Integer.parseInt(id));
+    			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
+    			
+    			// czytaj strumien dopoki nie zostanie uzyskany tylko jeden rekord lub brak wyniku
+    			do {
+    				listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
+    			}while(listaHulajnog.size()!=1 && !listaHulajnog.isEmpty() && listaHulajnog!=null);
+    			
+    			if(listaHulajnog.isEmpty() || listaHulajnog==null) {
+    				tv.getItems().clear();
+    				tv.refresh();
+    				return;
+    			}else {
+        			tv.getItems().clear();
+        			for(Pojazd temp:listaHulajnog){
+        				tv.getItems().add(temp);
+        			}
+        			tv.refresh();
+    			}
+    			
+    		}catch(Exception wyjatek) {
+    			wyjatek.printStackTrace();
+    		}
+    		
     	};
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
     }
@@ -69,8 +142,47 @@ public class ListController {
     	Runnable watek = () ->{
     		if(zdarzenie.getClickCount() == 2) {
     			if(tv.getSelectionModel().getSelectedItem().getClass()==Pojazd.class){
+    				
     				Platform.runLater(()->{
+    					
+    					// popup w celu potwierdzenia wyboru
+    					Alert alert = new Alert(AlertType.CONFIRMATION, "Czy na pewno chcesz wypożyczyć pojazd?",
+    							ButtonType.OK, ButtonType.CANCEL);
+    					alert.setTitle("Potwierdzenie");
+    					alert.setHeaderText("Potwierdz wybor");
+    					
+    					((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Potwierdz");
+    					((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Anuluj");
+    					alert.showAndWait();
+    					
+    					if(alert.getResult() == ButtonType.CANCEL)
+    						return;
+    					
+    					// po zaakceptowaniu wybor pojazdu
         				wybranyPojazd=(Pojazd)tv.getSelectionModel().getSelectedItem();
+    					
+    					// sprawdzenie czy pojazd nie zostal w miedzyczasie zajety przez innego uzytkownika
+        				try {
+        					ConnectionBox.getInstance().getDoSerwera().flush();
+            				ConnectionBox.getInstance().getDoSerwera().reset();
+                			ConnectionBox.getInstance().getDoSerwera().writeObject("sprawdzDostepnosc()");
+                			ConnectionBox.getInstance().getDoSerwera().writeObject(wybranyPojazd);
+                			ConnectionBox.getInstance().getDoSerwera().flush();
+                			ConnectionBox.getInstance().getDoSerwera().reset();
+                			
+                    		Object potwierdzenie = null;
+                    		do {
+                    			potwierdzenie = ConnectionBox.getInstance().getOdSerwera().readObject();
+                    		}while(!(potwierdzenie instanceof Boolean));
+                    		
+                    		if(!(Boolean)potwierdzenie) {
+                    			infoLabel.setText("Pojazd jest już zajęty, proszę o odświeżenie!");
+                    			return;
+                    		}
+                    		
+        				}catch (Exception wyjatek) {
+							wyjatek.printStackTrace();
+						}
         				
         				// inicjalizacja widoku ze statystykami pojazdu
     					FXMLLoader loader = new FXMLLoader(getClass().getResource(SCOOTER_VIEW_XML));
@@ -93,9 +205,12 @@ public class ListController {
                     	
                     	try {
                     		// inicjalizacja wypozyczenia z baza
+                			ConnectionBox.getInstance().getDoSerwera().flush();
+                			ConnectionBox.getInstance().getDoSerwera().reset();
                     		ConnectionBox.getInstance().getDoSerwera().writeObject("stworzWypozyczenie()");
                     		ConnectionBox.getInstance().getDoSerwera().writeObject(tempWypozyczenie);
                     		ConnectionBox.getInstance().getDoSerwera().flush();
+                    		ConnectionBox.getInstance().getDoSerwera().reset();
 
                     		Object odbiorZeStrumienia = null;
                     		do {

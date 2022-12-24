@@ -1,7 +1,11 @@
 package org.pk.serwer.dao;
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.pk.entity.Pojazd;
 import org.pk.entity.Wypozyczenie;
 
 public class WypozyczenieDao {
@@ -54,6 +58,33 @@ public class WypozyczenieDao {
 		
 		sesja.getTransaction().commit();
 		sesja.close();
+	}
+	
+	public Boolean sprawdzDostepnosc(Pojazd pojazd) {
+		
+		Session sesja = fabrykaSesji.getCurrentSession();
+		boolean dostepny=false;
+		
+		sesja.beginTransaction();
+		
+		try {
+			Query query = sesja.createQuery("select w from Wypozyczenie w where "
+					+ "w.pojazd.id=:idPojazdu and w.dataZwr is null", Wypozyczenie.class);
+			query.setParameter("idPojazdu", pojazd.getId());
+			query.getSingleResult();
+		}
+		catch (NoResultException brakWyniku) {
+			dostepny=true;
+		}
+		catch (Exception wyjatek) {
+			wyjatek.printStackTrace();
+		} 
+		
+		sesja.getTransaction().commit();
+		sesja.close();
+		
+		return dostepny;
+		
 	}
 	
 }

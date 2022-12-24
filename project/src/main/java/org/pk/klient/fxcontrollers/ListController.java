@@ -108,6 +108,7 @@ public class ListController {
                     		wyjatek.printStackTrace();
                     	}
     					try {
+    						System.out.println("TEMP WYP: " + tempWypozyczenie.getId());
     						scooterController.zmienStan(tempWypozyczenie);
     					}catch(InterruptedException wyjatekPrzerwaniaWatku) {
     						wyjatekPrzerwaniaWatku.printStackTrace(); 

@@ -16,9 +16,9 @@ public class SerwerStart {
 		ServerSocket serwer = null;
 		ExecutorService wykonawcaKlient = null;
 		try {
-			serwer = new ServerSocket(NUMER_PORTU); // TO DO: stala
+			serwer = new ServerSocket(NUMER_PORTU);
 			serwer.setReuseAddress(true);
-			wykonawcaKlient = Executors.newFixedThreadPool(DOSTEPNA_ILOSC_WATKOW);	// TO DO: stala	
+			wykonawcaKlient = Executors.newFixedThreadPool(DOSTEPNA_ILOSC_WATKOW);
 			// petla nasluchujaca na nowych klientow, .accept() blokuje dzialanie programu
 			while(true) {
 				Socket klient = serwer.accept();

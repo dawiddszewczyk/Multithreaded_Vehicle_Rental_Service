@@ -30,7 +30,9 @@ public class PojazdDao {
 	public void zaktualizujPojazd(Pojazd pojazd){
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
-
+		System.out.println("W DAO ID POJAZD: " + pojazd.getId());
+		System.out.println("W DAO POJAZD WYP ID: " + pojazd.getWypozyczenia());
+		System.out.println("W DAO POJAZD ZUZYCIE+ " + pojazd.getStanBaterii());
 		try {
 			sesja.saveOrUpdate(pojazd);
 			sesja.flush();

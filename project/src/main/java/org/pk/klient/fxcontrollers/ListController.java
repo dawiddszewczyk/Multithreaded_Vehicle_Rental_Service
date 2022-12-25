@@ -77,7 +77,7 @@ public class ListController {
     													.getKlient().getImie());
     				zadluzenieLabel.setText("Twoje zadluzenie: " + ConnectionBox.getInstance()
     															   .getKlient().getZadluzenie()
-    															 + "PLN");
+    															 + " PLN");
     			});
     			
     			ConnectionBox.getInstance().getDoSerwera().flush();

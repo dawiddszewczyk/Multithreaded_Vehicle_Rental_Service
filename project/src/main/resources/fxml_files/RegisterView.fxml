@@ -6,10 +6,11 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.8442211055276382" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pk.klient.fxcontrollers.RejestracjaSceneController">
+<SplitPane dividerPositions="0.8442211055276382" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/rejestracja.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pk.klient.fxcontrollers.RejestracjaSceneController">
   <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+    <AnchorPane id="SplitPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
             <Label layoutX="218.0" layoutY="56.0" text="Imie" />
             <Label fx:id="nameLabel" layoutX="374.0" layoutY="77.0" prefHeight="17.0" prefWidth="223.0" />
@@ -26,14 +27,17 @@
             <Label layoutX="220.0" layoutY="250.0" text="Potwierdź hasło" />
             <Label fx:id="passwdLabel" layoutX="374.0" layoutY="229.0" prefHeight="17.0" prefWidth="223.0" />
             <PasswordField fx:id="cPasswdField" layoutX="218.0" layoutY="269.0" />
-            <Label layoutX="43.0" layoutY="28.0" text="Rejestracja" />
+            <Label layoutX="43.0" layoutY="28.0" text="Rejestracja">
+               <font>
+                  <Font size="16.0" />
+               </font></Label>
             <Label fx:id="cPasswdLabel" layoutX="374.0" layoutY="273.0" prefHeight="17.0" prefWidth="223.0" />
          </children>
       </AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+    <AnchorPane id="AnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <Button layoutX="216.0" layoutY="20.0" mnemonicParsing="false" onAction="#cofnijDoLogowania" text="Cofnij" />
-            <Button layoutX="307.0" layoutY="20.0" mnemonicParsing="false" onAction="#wykonajRejestracje" text="Zarejestruj" />
+            <Button layoutX="210.0" layoutY="12.0" mnemonicParsing="false" onAction="#cofnijDoLogowania" text="Cofnij" />
+            <Button layoutX="309.0" layoutY="12.0" mnemonicParsing="false" onAction="#wykonajRejestracje" text="Zarejestruj" />
          </children></AnchorPane>
   </items>
 </SplitPane>

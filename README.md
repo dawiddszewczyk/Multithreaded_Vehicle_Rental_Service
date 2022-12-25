@@ -1,5 +1,5 @@
 # Wstęp
-Projekt uproszczonej wypożyczalni pojazdów zrealizowany z wykorzystaniem JDK 18.0.1, JavaFX, CSS, Hibernate (+ MySQL) oraz multithreadingu (architektura klient-serwer).
+Projekt (czysto edukacyjny) uproszczonej wypożyczalni pojazdów zrealizowany z wykorzystaniem JDK 18.0.1, JavaFX, CSS, Hibernate (+ MySQL) oraz multithreadingu (architektura klient-serwer).
 # Jak użyć?
 Projekt należy pobrać i zaimportować do IDE z wykorzystaniem Mavena. Dodatkowo, należy ustanowić połączenie z serwerem bazodanowym MySQL (projekt był tworzony, z użyciem narzędzi Xampp oraz MYSQLWorkbench Community Edition). Po ustanowieniu połączenia, należy zaimportować bazę danych z wykorzystaniem plików **.sql** dołączonych do projektu. Przygotowane są dwie wersje, dla Xampp oraz MYSQLWorkbench. Pojazdy do użytku w aplikacji, należy dodać z poziomu bazy danych. W folderze z plikami .sql dołączony został plik **.txt** z komendą, do utworzenia trzech wstępnych pojazdów.
 To już prawie koniec konfiguracji bazy danych. Na sam koniec należy zedytować w projekcie plik **hibernate.cfg.xml** w katalogu src/main/resources/hibernate_configs. Do edycji są pola "connection.url", "connection.username" oraz "connection.password".

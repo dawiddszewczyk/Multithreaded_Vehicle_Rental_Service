@@ -12,6 +12,11 @@ import org.pk.serwer.dao.PojazdDao;
 import org.pk.serwer.dao.WypozyczenieDao;
 import org.pk.serwer.klientwatki.SerwerStart;
 
+/**
+ * Klasa z metodą main inicjującą serwer. Należy uruchomić tylko jeden raz, jako zwykłą
+ * aplikację javy. Tworzy ona instancje singletonów dao oraz tworzy obiekt dostarczający
+ * sesje do bazy danych. Sesje te są wykorzystywane w DAO. Na samym końcu inicjuje metodę z klasy SerwerStart.
+ */
 public class MainServer {
 
 	public static void main(String[] args) {

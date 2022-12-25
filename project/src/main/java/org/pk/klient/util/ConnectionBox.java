@@ -9,6 +9,18 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Klasa będąca singletonem. Przechowywuje referencję do najważniejszych obiektów
+ * które są używane w całym programie klienckim. Przechowuje referencje takie jak:
+ * - Object input stream (strumień klient-serwer)
+ * - Object output stream (strumeiń klient-serwer)
+ * - id obecnie zalogowanego klienta
+ * - obiekt obecnie zalogowanego klienta
+ * - wykonawca (executor service) używany w całym programie. Większość przycisków w interfejsie graficznym,
+ * gdy zostanie wciśnięta, to tworzony jest dla nich osobny wątek by nie blokować działania programu. Wykonawca w tej klasie
+ * zajmuje się wykonywaniem tych wątków.
+ * - obiekt procesu obecnego wypożyczenia pojazdu użytkownika (w celu np. zatrzymania wypożyczenia)
+ */
 public class ConnectionBox {
 
 	private static volatile ConnectionBox polaczenie;
@@ -29,11 +41,21 @@ public class ConnectionBox {
 		this.wykonawcaGlobalny=Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	}
 	
+	/**
+	 * Metoda służąca inicjalizacji singletona.
+	 * @param odSerwera Połączenie przychodzące z serwera (ObjectInputStream)
+	 * @param doSerwera Połączenie wychodzące do serwera (ObjectOutputStream)
+	 * @param polaczenieSerwer Socket w którym znajduje się połączenie z serwerem (od strony klienta)
+	 * @return instancję singletona ConnectionBox
+	 */
 	public static ConnectionBox getInstance(ObjectInputStream odSerwera, ObjectOutputStream doSerwera, Socket polaczenieSerwer) {
 		if(polaczenie==null) polaczenie = new ConnectionBox(odSerwera, doSerwera, polaczenieSerwer);
 		return polaczenie;
 	}
 	
+	/**
+	 * @return instancję singletona ConnectionBox
+	 */
 	public static ConnectionBox getInstance() {
 		if(polaczenie==null) return null;
 		return polaczenie;
@@ -55,6 +77,9 @@ public class ConnectionBox {
 		return klient;
 	}
 
+	/**
+	 * Setter dla obiektu klienta oraz jego id
+	 */
 	public void setKlientIIdKlienta(int idKlienta,Klient klient) {
 		this.idKlienta = idKlienta;
 		this.klient=klient;
@@ -80,6 +105,9 @@ public class ConnectionBox {
 		this.wypozyczenieFt = wypozyczenieFt;
 	}
 
+	/**
+	 * Metoda służąca do zamknięcia wszelkich połączeń oraz wątków, wykorzystywanych przez klienta (poza wypożyczeniem)
+	 */
 	public void zamknijPolaczenia() {
 		this.wykonawcaGlobalny.shutdownNow();
 		try {

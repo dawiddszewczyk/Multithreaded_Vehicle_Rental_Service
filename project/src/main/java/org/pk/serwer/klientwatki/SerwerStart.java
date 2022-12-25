@@ -11,6 +11,13 @@ import java.util.concurrent.Executors;
 
 import org.hibernate.SessionFactory;
 
+/**
+ * Klasa mająca statyczną metodę, do inicjalizacji pracy serwera. Metoda ta
+ * jest wywoływana w klasie MainSerwer. Przyjmuje obiekt fabryki sesji i w niej
+ * tworzony jest ServerSocket przyjmujący połączenia od potencjalnych klientów, oraz wątki
+ * klasy KlientCallable. Po zakończeniu pracy (wystąpieniu wyjątku) wszystkie zasoby (w tym fabryka sesji)
+ * są zwalniane
+ */
 public class SerwerStart {
 	public static void start(SessionFactory fabrykaSesji){
 		

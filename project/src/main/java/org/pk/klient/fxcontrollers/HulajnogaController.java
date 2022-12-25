@@ -25,6 +25,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+/**
+ * Klasa będąca łącznikiem między interfejsem javafx (tutaj: HulajnogaView.fxml -
+ * okno wypożyczenia hulajnogi) a programem
+ */
 public class HulajnogaController {
     
 	private Stage stage;
@@ -43,37 +47,48 @@ public class HulajnogaController {
     @FXML
     private TextField TextAreaRange;
     
-    public void ustawWartosci(Pojazd temp){
-        TextAreaId.setText(Integer.toString(temp.getId()));
-        TextAreaName.setText(temp.getNazwa());
-        TextAreaBattery.setText(Double.toString(temp.getStanBaterii()));
-        TextAreaRange.setText(Double.toString(temp.getLicznikkm()));
+    /**
+     * Metoda służąca do zmiany wartości kontrolek id, nazwy pojazdu, baterii oraz zasięgu podczas wypożyczenia
+     * @param wypozyczonyPojazd obiekt pojazdu zaciągnięty z wypożyczenia w metodzie zmienStan()
+     */
+    public void ustawWartosci(Pojazd wypozyczonyPojazd){
+        TextAreaId.setText(Integer.toString(wypozyczonyPojazd.getId()));
+        TextAreaName.setText(wypozyczonyPojazd.getNazwa());
+        TextAreaBattery.setText(Double.toString(wypozyczonyPojazd.getStanBaterii()));
+        TextAreaRange.setText(Double.toString(wypozyczonyPojazd.getLicznikkm()));
     }
     
-    public void zmienStan(Wypozyczenie temp) throws InterruptedException {
+    /**
+     * Metoda służąca do przeprowadzenia procesu wypożyczenia. Jest to wątek który co 1s aktualizuje dane wypożyczenia.
+     * Nalicza użytkownikowi koszt, zmniejsza zasoby hulajnogi.
+     * @param wypozyczenie uzupełniony obiekt wypożyczenia o klienta oraz pojazd.
+     * @throws InterruptedException wyjątek jest wyrzucany/przechwytywany, gdy klient zakończy wypożyczenie
+     * lub statystyki hulajnogi (stan baterii) będzie mniejszy lub równy 0.
+     */
+    public void procesWypozyczenia(Wypozyczenie wypozyczenie) throws InterruptedException {
     	
     	Runnable watek = () ->{
     		while(!Thread.currentThread().isInterrupted()) {
     			try {
 					Thread.sleep(1000);
-                    if(temp.getPojazd().getStanBaterii()<=0){
+                    if(wypozyczenie.getPojazd().getStanBaterii()<=0){
                         throw new InterruptedException();
                     }else{
-                        BigDecimal stanBaterii = BigDecimal.valueOf(temp.getPojazd().getStanBaterii()).subtract(new BigDecimal("0.1"));
-                        BigDecimal licznikKm = BigDecimal.valueOf(temp.getPojazd().getLicznikkm()).subtract(new BigDecimal("0.02"));
-                        BigDecimal zadluzenie = BigDecimal.valueOf(temp.getKlient().getZadluzenie()).add(new BigDecimal("0.01"));
-                        temp.getPojazd().setStanBaterii(stanBaterii.doubleValue());
-                        temp.getPojazd().setLicznikkm(licznikKm.doubleValue());
-                        temp.getKlient().setZadluzenie(zadluzenie.doubleValue());
+                        BigDecimal stanBaterii = BigDecimal.valueOf(wypozyczenie.getPojazd().getStanBaterii()).subtract(new BigDecimal("0.1"));
+                        BigDecimal licznikKm = BigDecimal.valueOf(wypozyczenie.getPojazd().getLicznikkm()).subtract(new BigDecimal("0.02"));
+                        BigDecimal zadluzenie = BigDecimal.valueOf(wypozyczenie.getKlient().getZadluzenie()).add(new BigDecimal("0.01"));
+                        wypozyczenie.getPojazd().setStanBaterii(stanBaterii.doubleValue());
+                        wypozyczenie.getPojazd().setLicznikkm(licznikKm.doubleValue());
+                        wypozyczenie.getKlient().setZadluzenie(zadluzenie.doubleValue());
                     }
 				} catch (InterruptedException wyjatekIE) {
                     try {
-                        temp.setDataZwr(new Timestamp(System.currentTimeMillis()));
+                    	wypozyczenie.setDataZwr(new Timestamp(System.currentTimeMillis()));
                         // reset konieczny z uwagi na odczyt pojazdu sprzed przypisania wypozyczeniu id
                         ConnectionBox.getInstance().getDoSerwera().flush();
                         ConnectionBox.getInstance().getDoSerwera().reset();
                         ConnectionBox.getInstance().getDoSerwera().writeObject("zaktualizujWypozyczenie()");
-                        ConnectionBox.getInstance().getDoSerwera().writeObject(temp);
+                        ConnectionBox.getInstance().getDoSerwera().writeObject(wypozyczenie);
                         ConnectionBox.getInstance().getDoSerwera().flush();
 
                     } catch (IOException wyjatekIo) {
@@ -82,7 +97,7 @@ public class HulajnogaController {
                     return;
 				}
     			Platform.runLater(()->{
-    				ustawWartosci(temp.getPojazd());
+    				ustawWartosci(wypozyczenie.getPojazd());
     			});
     		}
     	};
@@ -91,6 +106,10 @@ public class HulajnogaController {
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(wypozyczenieFTask);
     }
     
+    /**
+     * Metoda obsługująca przycisk zakończenia wypożyczenia w interfejsie graficznym
+     * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+     */
     @FXML
     public void zakonczWypozyczenie(ActionEvent zdarzenie){
     	

@@ -3,26 +3,33 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.8442211055276382" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pk.klient.fxcontrollers.HulajnogaController">
+<SplitPane dividerPositions="0.8442211055276382" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/hulajnogaView.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pk.klient.fxcontrollers.HulajnogaController">
    <items>
-      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+      <AnchorPane id="SplitPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
             <TextField fx:id="TextAreaBattery" editable="false" layoutX="362.0" layoutY="218.0" />
             <TextField fx:id="TextAreaName" editable="false" layoutX="362.0" layoutY="170.0" />
             <TextField fx:id="TextAreaId" editable="false" layoutX="362.0" layoutY="119.0" />
-            <Text layoutX="376.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Id Hulajnogi" />
-            <Text layoutX="376.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazwa Hulajnogi" />
-            <Text layoutX="376.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stan Baterii" />
-            <Text layoutX="376.0" layoutY="264.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zasięg" />
+            <Text layoutX="362.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Id Hulajnogi" />
+            <Text layoutX="362.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazwa Hulajnogi" />
+            <Text layoutX="363.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stan Baterii" />
+            <Text layoutX="363.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zasięg" />
             <TextField fx:id="TextAreaRange" editable="false" layoutX="362.0" layoutY="268.0" />
+            <ImageView fitHeight="228.0" fitWidth="297.0" layoutX="44.0" layoutY="109.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../png_files/scooter.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+      <AnchorPane id="AnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <Button layoutX="273.0" layoutY="17.0" mnemonicParsing="false" onAction="#zakonczWypozyczenie" text="Skończ" />
+            <Button layoutX="259.0" layoutY="12.0" mnemonicParsing="false" onAction="#zakonczWypozyczenie" text="Skończ" />
          </children>
       </AnchorPane>
    </items>

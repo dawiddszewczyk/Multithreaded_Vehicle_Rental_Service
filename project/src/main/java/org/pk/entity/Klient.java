@@ -15,7 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
+/**
+ * Klasa służąca mapowaniu encji bazodanowej klient na obiekt javy
+ * jest połączona relacją 1:n z wypożyczeniami
+ */
 @SuppressWarnings("serial")
 @Table(name="klient")
 @Entity
@@ -76,28 +79,11 @@ public class Klient implements Serializable {
 		this.haslo = haslo;
 		this.zadluzenie=zadluzenie;
 	}
-
-	public void dodajPojazd(Pojazd pojazd) {
-		if(wypozyczenia==null) wypozyczenia = new ArrayList<>();
-		if(pojazd.getWypozyczenia()==null) pojazd.setWypozyczenia(new ArrayList<>());
-		Wypozyczenie wypozyczenie = new Wypozyczenie(this, pojazd);
-		this.wypozyczenia.add(wypozyczenie);
-		pojazd.getWypozyczenia().add(wypozyczenie);
-		
-	}
 	
-	public void usunPojazd(Pojazd pojazd) {
-		for(Wypozyczenie wypozyczenie : wypozyczenia) {
-			if(wypozyczenie.getKlient().equals(this) &&
-					wypozyczenie.getPojazd().equals(pojazd)) {
-				this.wypozyczenia.remove(wypozyczenie);
-				pojazd.getWypozyczenia().remove(wypozyczenie);
-				wypozyczenie.setKlient(null);
-				wypozyczenie.setPojazd(null);
-			}
-		}
-	}
-	
+	/**
+	 * Metoda służąca do stworzenia połączenia (referencje) między wypożyczeniem, pojazdem i klientem
+	 * @param wypozyczenie przyjmuje stworzone wypożyczenie, z przypisanym mu klientem i pojazdem
+	 */
 	public void dodajWypozyczenie2S(Wypozyczenie wypozyczenie) {
 		if(wypozyczenie==null) wypozyczenia = new ArrayList<>();
 		wypozyczenia.add(wypozyczenie);

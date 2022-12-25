@@ -8,6 +8,12 @@ import java.util.concurrent.Callable;
 
 import org.pk.serwer.util.KlientManagerKomend;
 
+/**
+ * Klasa która pełni rolę wątku dla konkretnego klienta połączonego z serwerem.
+ * Przechowuje ona id podpiętego klienta oraz połączenie z nim przez obiekt klasy Socket.
+ * Wątek ten jest utrzymywany, dopóki klient nie zakończy pracy (lub też serwer). Przechwytuje
+ * on rozkazy od klienta i komunikuje się z bazą danych.
+ */
 public class KlientCallable <V> implements Callable<V> {
 
 	private final Socket klient;

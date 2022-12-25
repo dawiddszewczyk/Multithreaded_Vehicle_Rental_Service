@@ -3,6 +3,9 @@ package org.pk.util;
 import com.password4j.BcryptFunction;
 import com.password4j.types.Bcrypt;
 
+/**
+ * Klasa służąca do przechowywania stałych wartości używanych w programie
+ */
 public class StaleWartosci {
 	// Szyfrowanie
 	public static final BcryptFunction bcrypt = BcryptFunction.getInstance(Bcrypt.Y,10);
@@ -16,5 +19,4 @@ public class StaleWartosci {
 	public static final String REGISTER_VIEW_XML = "/fxml_files/RegisterView.fxml";
 	public static final String LIST_VIEW_XML = "/fxml_files/ListView.fxml";
 	public static final String SCOOTER_VIEW_XML = "/fxml_files/HulajnogaView.fxml";
-	public static final String SCOOTER_PNG = "/png_files/scooter.png";
 }

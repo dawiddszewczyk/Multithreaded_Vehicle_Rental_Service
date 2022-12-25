@@ -3,6 +3,7 @@ package org.pk.klient.fxcontrollers;
 
 import java.io.IOException;
 
+
 import org.pk.entity.Klient;
 import org.pk.klient.util.ConnectionBox;
 
@@ -23,6 +24,10 @@ import javafx.stage.Stage;
 
 import static org.pk.util.StaleWartosci.*;
 
+/**
+ * Klasa będąca łącznikiem między interfejsem javafx (tutaj: AppView.fxml -
+ * okno z logowaniem/startowe) a programem
+ */
 public class LoginSceneController {	
 	
 	private Stage stage;
@@ -41,26 +46,49 @@ public class LoginSceneController {
 	private Label passwdLabel;
     @FXML
     private Button wyjscieButton;
-	
-	public void przejdzDoRejestracji(ActionEvent zdarzenie) throws IOException {
-		kontener = FXMLLoader.load(getClass().getResource(REGISTER_VIEW_XML));
-		stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
-		scene = new Scene(kontener);
-		stage.setScene(scene);
-		stage.show();
+    
+	/**
+	 * Metoda oddelegowywująca do rejestracji
+	 * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+	 */
+	public void przejdzDoRejestracji(ActionEvent zdarzenie){
+		try {
+			kontener = FXMLLoader.load(getClass().getResource(REGISTER_VIEW_XML));
+			stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
+			scene = new Scene(kontener);
+			stage.setScene(scene);
+			stage.show();
+		} catch (Exception wyjatek) {
+			System.out.println("Wyjatek podczas przejscia do rejestracji");
+		}
 	}
+	/**
+	 * Metoda służąca do wyczyszczenia pól z emailem i hasłem
+	 */
 	public void wyczyscFieldy() {
 		emailField.clear();
 		passwdField.clear();
 	}
+	/**
+	 * Metoda służąca do wyczyszczenia labeli (pól informacyjnych) obok inputów emaila i hasła
+	 */
 	public void wyczyscLabele() {
 		emailLabel.setText(null);
 		passwdLabel.setText(null);
 	}
+	/**
+	 * Metoda służąca do wyświetlenia wiadomości po udanej rejestracji
+	 * @param wiadomosc
+	 */
 	public void udanaRejestracja(String wiadomosc){
 		regInfoLabel.setText(wiadomosc);
 	}
 	
+	/**
+	 * Metoda, która obsługuje proces logowania. Dokonuje ona walidacji danych wprowadzonych przez użytkownika, i przeprowadza
+	 * komunikację z serwerem w tym celu
+	 * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+	 */
 	@FXML
 	public void logowanie(ActionEvent zdarzenie) {
 		
@@ -134,6 +162,10 @@ public class LoginSceneController {
 		ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
 	}
 	
+	/**
+	 * Metoda służąca do obsługi procesu zamknięcia aplikacji, po wciśnięciu przycisku wyjścia z ekranu logowania
+	 * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+	 */
     @FXML
     public void wyjscieLogowanie(ActionEvent zdarzenie) {
     	

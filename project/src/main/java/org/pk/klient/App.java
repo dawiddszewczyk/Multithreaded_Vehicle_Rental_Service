@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
 
 import javafx.fxml.FXMLLoader;
 import org.pk.entity.Klient;
@@ -18,20 +17,22 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 /**
- * JavaFX App
+ * Klasa z metodą main (klient) połączona z javafx. Wywołanie maina z tej klasy spowoduje
+ * włączenie instancji klienta. W IDE należy uruchamiać z wykorzystaniem maven'a/javafx.
+ * Można uruchamiać wielokrotnie
  */
 public class App extends Application {
 
+	/**
+	 * Metoda inicjująca javafx. Łączy się ona z serwerem i ukazuje pierwszą scenę logowania.
+	 */
     @Override
     public void start(Stage stage) {
 
     	Socket serwer = null;
 		ObjectOutputStream doSerwera = null;
 		ObjectInputStream odSerwera= null;
-		@SuppressWarnings("unused")
-		ExecutorService wykonawcaPolaczenia = null;
 
     	try {
     		serwer = new Socket("localhost",NUMER_PORTU);

@@ -26,6 +26,10 @@ import java.util.List;
 
 import static org.pk.util.StaleWartosci.SCOOTER_VIEW_XML;
 
+/**
+ * Klasa będąca łącznikiem między interfejsem javafx (tutaj: ListView.fxml -
+ * okno z listą pojazdów) a programem
+ */
 public class ListController {
 	
     private Stage stage;
@@ -65,6 +69,12 @@ public class ListController {
     private List<Pojazd> listaHulajnog;
     private Pojazd wybranyPojazd;
     
+    /**
+     * Metoda służąca do pobierania listy wszystkich dostępnych pojazdów oraz inicjalizacji
+     * statystyk użytkownika (pokazywanie ich w interfejsie). Używana także podczas odświeżania po kliknięciu
+     * przycisku "odśwież"
+     * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+     */
     @SuppressWarnings("unchecked")
 	@FXML
     public void pobierzListe(ActionEvent zdarzenie) {
@@ -78,7 +88,7 @@ public class ListController {
     													.getKlient().getImie());
     				zadluzenieLabel.setText("Twoje zadluzenie: " + ConnectionBox.getInstance()
     															   .getKlient().getZadluzenie()
-    															 + "PLN");
+    															 + " PLN");
     			});
     			
     			ConnectionBox.getInstance().getDoSerwera().flush();
@@ -102,6 +112,10 @@ public class ListController {
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
     }
     
+    /**
+     * Metoda służąca do pobierania na listView konkretnego pojazdu z użyciem wyszukania (po ID)
+     * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+     */
     @FXML
 	@SuppressWarnings("unchecked")
     public void pobierzListeZId(ActionEvent zdarzenie) {
@@ -153,6 +167,11 @@ public class ListController {
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
     }
     
+    /**
+     * Metoda służąca do wybrania konkretnego pojazdu z listy w celu wypożyczenia. Posiada także pop-up sprawdzający,
+     * czy użytkownik jest pewien co do swojego wyboru oraz sprawdzenie, czy ktoś już nie wypożyczył danego pojazdu.
+     * @param zdarzenie przyjmuje obiekt klasy MouseEvent zawierający informacje o akcjach użytkownika
+     */
     @FXML
     public void wybierzPojazd(MouseEvent zdarzenie) {
     	
@@ -240,7 +259,7 @@ public class ListController {
                     		wyjatek.printStackTrace();
                     	}
     					try {
-    						scooterController.zmienStan(tempWypozyczenie);
+    						scooterController.procesWypozyczenia(tempWypozyczenie);
     					}catch(InterruptedException wyjatekPrzerwaniaWatku) {
     						wyjatekPrzerwaniaWatku.printStackTrace(); 
     					}
@@ -251,7 +270,11 @@ public class ListController {
     	};
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
     }
-
+	
+    /**
+     * Metoda obsługująca proces wyjścia z aplikacji po naciśnięciu przycisku
+     * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+     */
     @FXML
     public void wyjscieList(ActionEvent zdarzenie) {
     	

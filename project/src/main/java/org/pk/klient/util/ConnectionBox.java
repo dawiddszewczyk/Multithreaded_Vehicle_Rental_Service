@@ -1,8 +1,6 @@
 package org.pk.klient.util;
 
 import org.pk.entity.Klient;
-import org.pk.entity.Pojazd;
-import org.pk.entity.Wypozyczenie;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

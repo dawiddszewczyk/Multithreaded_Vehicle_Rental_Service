@@ -2,6 +2,7 @@ package org.pk.serwer.dao;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.hibernate.Session;
@@ -28,11 +29,10 @@ public class PojazdDao {
 	}
 	
 	public void zaktualizujPojazd(Pojazd pojazd){
+		
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
-		System.out.println("W DAO ID POJAZD: " + pojazd.getId());
-		System.out.println("W DAO POJAZD WYP ID: " + pojazd.getWypozyczenia());
-		System.out.println("W DAO POJAZD ZUZYCIE+ " + pojazd.getStanBaterii());
+		
 		try {
 			sesja.saveOrUpdate(pojazd);
 			sesja.flush();
@@ -47,8 +47,8 @@ public class PojazdDao {
 	
 	@SuppressWarnings("unchecked")
 	public List<Pojazd> getListaPojazdow(int idPojazdu, boolean uzyjId){
+		
 		List<Pojazd> listaHulajnog=null;
-
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
 
@@ -66,9 +66,12 @@ public class PojazdDao {
 						+ "AND p.id=:idPojazdu", 
 						Pojazd.class);
 				query.setParameter("idPojazdu", idPojazdu);
-				System.out.println("W drugiej czesci");
 			}
+			
 			listaHulajnog= (List<Pojazd>) query.getResultList();
+		}
+		catch (NoResultException brakWyniku) {
+			System.out.println("Nie znaleziono listy");
 		}
 		catch (Exception wyjatek) {
 			wyjatek.printStackTrace();
@@ -78,7 +81,4 @@ public class PojazdDao {
 		sesja.close();
 		return listaHulajnog;
 	}
-	
-	
-	
 }

@@ -1,7 +1,7 @@
 package org.pk.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -24,9 +24,9 @@ public class Wypozyczenie implements Serializable {
 	@Column(name="idwypozyczenia")
 	private int id;
 	@Column(name="data_wyp")
-	private Date dataWyp = new Date(System.currentTimeMillis());
+	private Timestamp dataWyp = new Timestamp(System.currentTimeMillis());
 	@Column(name="data_zwr")
-	private Date dataZwr;
+	private Timestamp dataZwr;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="idklientaW")
@@ -46,19 +46,19 @@ public class Wypozyczenie implements Serializable {
 		this.pojazd = pojazd;
 	}
 
-	public Date getDataWyp() {
+	public Timestamp getDataWyp() {
 		return dataWyp;
 	}
 
-	public void setDataWyp(Date dataWyp) {
+	public void setDataWyp(Timestamp dataWyp) {
 		this.dataWyp = dataWyp;
 	}
 
-	public Date getDataZwr() {
+	public Timestamp getDataZwr() {
 		return dataZwr;
 	}
 
-	public void setDataZwr(Date dataZwr) {
+	public void setDataZwr(Timestamp dataZwr) {
 		this.dataZwr = dataZwr;
 	}
 
@@ -108,6 +108,4 @@ public class Wypozyczenie implements Serializable {
 		Wypozyczenie other = (Wypozyczenie) obj;
 		return id == other.id;
 	}
-	
-	
 }

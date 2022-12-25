@@ -34,11 +34,10 @@ public class Pojazd implements Serializable {
 	@OneToMany(
 		fetch = FetchType.LAZY,
 		mappedBy = "pojazd",
-		cascade = CascadeType.ALL
+		cascade = {CascadeType.MERGE, CascadeType.REMOVE}
 	)
 	private List<Wypozyczenie> wypozyczenia;
 
-	
 	// Pusty konstruktor dla Hibernate
 	public Pojazd() {
 		
@@ -115,6 +114,4 @@ public class Pojazd implements Serializable {
 		Pojazd other = (Pojazd) obj;
 		return id == other.id;
 	}
-	
-	
 }

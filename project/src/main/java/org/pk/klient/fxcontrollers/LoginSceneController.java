@@ -13,8 +13,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import static org.pk.util.StaleWartosci.*;
@@ -35,6 +39,8 @@ public class LoginSceneController {
 	private Label emailLabel;
 	@FXML
 	private Label passwdLabel;
+    @FXML
+    private Button wyjscieButton;
 	
 	public void przejdzDoRejestracji(ActionEvent zdarzenie) throws IOException {
 		kontener = FXMLLoader.load(getClass().getResource(REGISTER_VIEW_XML));
@@ -64,13 +70,13 @@ public class LoginSceneController {
 			// Walidacja czy pola puste
 			if(emailField.getText().isEmpty()) {
 				Platform.runLater(()->{
-					emailLabel.setText("Email field is empty!");
+					emailLabel.setText("Pole z emailem jest puste!");
 				});
 				return;
 			}
 			if(passwdField.getText().isEmpty()) {
 				Platform.runLater(()->{
-					passwdLabel.setText("Password field is empty!");
+					passwdLabel.setText("Pole z hasłem jest puste!");
 				});
 				return;
 			}
@@ -94,7 +100,7 @@ public class LoginSceneController {
 			
 			if(klientZSerwera==null) {
 				Platform.runLater(()->{
-					regInfoLabel.setText("Wrong email or password");
+					regInfoLabel.setText("Zly email lub haslo");
 					wyczyscFieldy();
 				});
 				return;
@@ -103,7 +109,7 @@ public class LoginSceneController {
 			// Ustawienie w connectionBox idKlienta (jezeli logowanie powiodlo sie)
 			ConnectionBox.getInstance().setKlientIIdKlienta(klientZSerwera.getId(),klientZSerwera);
 			
-			Platform.runLater(()->regInfoLabel.setText("Login successful"));
+			Platform.runLater(()->regInfoLabel.setText("Pomyslnie zalogowano"));
 
 			// inicjalizacja listy z dostepnymi pojazdami
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(LIST_VIEW_XML));
@@ -126,4 +132,25 @@ public class LoginSceneController {
 		};
 		ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
 	}
+	
+    @FXML
+    public void wyjscieLogowanie(ActionEvent zdarzenie) {
+    	
+		Alert alert = new Alert(AlertType.CONFIRMATION, "Czy na pewno chcesz wyjść z aplikacji?",
+				ButtonType.OK, ButtonType.CANCEL);
+		alert.setTitle("Potwierdzenie");
+		alert.setHeaderText("Potwierdz wyjście");
+		
+		((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Potwierdz");
+		((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Anuluj");
+		alert.showAndWait();
+		
+		if(alert.getResult() == ButtonType.CANCEL)
+			return;
+    	
+    	ConnectionBox.getInstance().zamknijPolaczenia();
+        Stage stage = (Stage) wyjscieButton.getScene().getWindow();
+        stage.close();
+        
+    }
 }

@@ -7,13 +7,14 @@ import java.io.ObjectOutputStream;
 import org.pk.entity.Klient;
 import org.pk.entity.Pojazd;
 import org.pk.entity.Wypozyczenie;
-import org.pk.klient.util.ConnectionBox;
 import org.pk.serwer.dao.KlientDao;
 import org.pk.serwer.dao.PojazdDao;
 import org.pk.serwer.dao.WypozyczenieDao;
+import org.pk.serwer.klientwatki.KlientCallable;
 
 public class KlientManagerKomend {
-	public static void wykonajKomende(String komenda, ObjectOutputStream doKlienta, ObjectInputStream odKlienta) throws ClassNotFoundException, IOException {
+	public static <V> void wykonajKomende(String komenda, ObjectOutputStream doKlienta,
+			ObjectInputStream odKlienta, KlientCallable<V> klientCallable) throws ClassNotFoundException, IOException {
 		
 		switch (komenda) {
 		
@@ -38,7 +39,8 @@ public class KlientManagerKomend {
 				break;
 				
 			case "zaktualizujWypozyczenie()":
-				WypozyczenieDao.getInstance().zaktualizujWypozyczenie((Wypozyczenie) odKlienta.readObject());
+				Wypozyczenie wypozyczenieDoZaktualizowania = (Wypozyczenie) odKlienta.readObject();
+				WypozyczenieDao.getInstance().zaktualizujWypozyczenie(wypozyczenieDoZaktualizowania);
 				System.out.println("Pomyslnie zaktualizowano wypozyczenie!");
 				break;
 				
@@ -58,6 +60,8 @@ public class KlientManagerKomend {
 						.logowanie(emailOdKlienta,hasloOdKlienta);
 				doKlienta.flush();
 				doKlienta.reset();
+				if(pobranyKlientZSerwera!=null)
+					klientCallable.setIdKlienta(pobranyKlientZSerwera.getId());
 				doKlienta.writeObject(pobranyKlientZSerwera);
 				doKlienta.flush();
 				doKlienta.reset();
@@ -87,6 +91,12 @@ public class KlientManagerKomend {
 						.sprawdzDostepnosc((Pojazd)odKlienta.readObject()));
 				doKlienta.flush();
 				doKlienta.reset();
+				break;
+				
+			case "usuniecieWypozyczenPoNaglymWylaczeniuK()":
+				WypozyczenieDao.getInstance().usuniecieWypozyczenPoNaglymWylaczeniu(klientCallable.getIdKlienta());
+				break;
+				
 			default:
 				break;
 		}

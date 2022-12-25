@@ -24,10 +24,10 @@ import org.pk.klient.util.ConnectionBox;
 import java.io.IOException;
 import java.util.List;
 
-import static org.pk.util.StaleWartosci.LIST_VIEW_XML;
 import static org.pk.util.StaleWartosci.SCOOTER_VIEW_XML;
 
 public class ListController {
+	
     private Stage stage;
     private Scene scene;
     private Parent kontener;
@@ -52,6 +52,15 @@ public class ListController {
     @FXML
     private Label infoLabel;
     
+    @FXML
+    private Label uzytkownikLabel;
+    
+    @FXML
+    private Label zadluzenieLabel;
+    
+    @FXML
+    private Button wyjscieButton;
+    
     private List<Pojazd> listaHulajnog;
     private Pojazd wybranyPojazd;
     
@@ -62,7 +71,14 @@ public class ListController {
     	Runnable watek = () ->{
     		try {
     			
-    			Platform.runLater(()->infoLabel.setText(""));
+    			Platform.runLater(()->{
+    				infoLabel.setText("");
+    				uzytkownikLabel.setText("Witaj, " + ConnectionBox.getInstance()
+    													.getKlient().getImie());
+    				zadluzenieLabel.setText("Twoje zadluzenie: " + ConnectionBox.getInstance()
+    															   .getKlient().getZadluzenie()
+    															 + "PLN");
+    			});
     			
     			ConnectionBox.getInstance().getDoSerwera().flush();
     			ConnectionBox.getInstance().getDoSerwera().reset();
@@ -85,7 +101,6 @@ public class ListController {
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
     }
     
-    
     @FXML
 	@SuppressWarnings("unchecked")
     public void pobierzListeZId(ActionEvent zdarzenie) {
@@ -94,8 +109,9 @@ public class ListController {
     		String id = idField.getText();
     		
     		// usun wszystko co nie jest liczba z inputu
-    		if(!id.matches("//d*")) id.replaceAll("[^//d]", "");
-    		
+    		if(!id.matches("[0-9]*"))
+    			id = id.replaceAll("[^0-9]", "");
+
     		try {
     			
     			if(id.isBlank()) {
@@ -223,7 +239,6 @@ public class ListController {
                     		wyjatek.printStackTrace();
                     	}
     					try {
-    						System.out.println("TEMP WYP: " + tempWypozyczenie.getId());
     						scooterController.zmienStan(tempWypozyczenie);
     					}catch(InterruptedException wyjatekPrzerwaniaWatku) {
     						wyjatekPrzerwaniaWatku.printStackTrace(); 
@@ -234,5 +249,25 @@ public class ListController {
     		}
     	};
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
+    }
+    
+    @FXML
+    public void wyjscieList(ActionEvent zdarzenie) {
+    	
+		Alert alert = new Alert(AlertType.CONFIRMATION, "Czy na pewno chcesz wyjść z aplikacji?",
+				ButtonType.OK, ButtonType.CANCEL);
+		alert.setTitle("Potwierdzenie");
+		alert.setHeaderText("Potwierdz wyjście");
+		
+		((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Potwierdz");
+		((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Anuluj");
+		alert.showAndWait();
+		
+		if(alert.getResult() == ButtonType.CANCEL)
+			return;
+    	
+    	ConnectionBox.getInstance().zamknijPolaczenia();
+        Stage stage = (Stage) wyjscieButton.getScene().getWindow();
+        stage.close();
     }
 }

@@ -7,7 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import org.pk.entity.Pojazd;
@@ -19,7 +23,7 @@ import static org.pk.util.StaleWartosci.LIST_VIEW_XML;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class HulajnogaController {
     
@@ -53,23 +57,23 @@ public class HulajnogaController {
     			try {
 					Thread.sleep(1000);
                     if(temp.getPojazd().getStanBaterii()<=0){
-                        return;
+                        throw new InterruptedException();
                     }else{
                         BigDecimal stanBaterii = BigDecimal.valueOf(temp.getPojazd().getStanBaterii()).subtract(new BigDecimal("0.1"));
                         BigDecimal licznikKm = BigDecimal.valueOf(temp.getPojazd().getLicznikkm()).subtract(new BigDecimal("0.02"));
+                        BigDecimal zadluzenie = BigDecimal.valueOf(temp.getKlient().getZadluzenie()).add(new BigDecimal("0.01"));
                         temp.getPojazd().setStanBaterii(stanBaterii.doubleValue());
                         temp.getPojazd().setLicznikkm(licznikKm.doubleValue());
+                        temp.getKlient().setZadluzenie(zadluzenie.doubleValue());
                     }
 				} catch (InterruptedException wyjatekIE) {
                     try {
-                        wyjatekIE.printStackTrace();
-                        temp.setDataZwr(new Date(System.currentTimeMillis()));
-                        
+                        temp.setDataZwr(new Timestamp(System.currentTimeMillis()));
                         // reset konieczny z uwagi na odczyt pojazdu sprzed przypisania wypozyczeniu id
                         ConnectionBox.getInstance().getDoSerwera().flush();
                         ConnectionBox.getInstance().getDoSerwera().reset();
-                        ConnectionBox.getInstance().getDoSerwera().writeObject("zaktualizujPojazd()");
-                        ConnectionBox.getInstance().getDoSerwera().writeObject(temp.getPojazd());
+                        ConnectionBox.getInstance().getDoSerwera().writeObject("zaktualizujWypozyczenie()");
+                        ConnectionBox.getInstance().getDoSerwera().writeObject(temp);
                         ConnectionBox.getInstance().getDoSerwera().flush();
 
                     } catch (IOException wyjatekIo) {
@@ -89,6 +93,19 @@ public class HulajnogaController {
     
     @FXML
     public void zakonczWypozyczenie(ActionEvent zdarzenie){
+    	
+		Alert alert = new Alert(AlertType.CONFIRMATION, "Czy na pewno chcesz zakończyć wypożyczenie?",
+				ButtonType.OK, ButtonType.CANCEL);
+		alert.setTitle("Potwierdzenie");
+		alert.setHeaderText("Potwierdz zakończenie wypożyczenia");
+		
+		((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Potwierdz");
+		((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Anuluj");
+		alert.showAndWait();
+		
+		if(alert.getResult() == ButtonType.CANCEL)
+			return;
+    	
     	Runnable watek = () -> {
     		ConnectionBox.getInstance().getWypozyczenieFt().cancel(true);
     		
@@ -106,7 +123,6 @@ public class HulajnogaController {
 				
 				ListController listController = loader.getController();
 				listController.pobierzListe(zdarzenie);
-			
 			
 				stage.show();
 			});

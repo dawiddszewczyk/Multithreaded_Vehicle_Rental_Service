@@ -83,7 +83,7 @@ public class RejestracjaSceneController {
 			// Podstawowa walidacja
 			if(!passwdField.getText().equals(cPasswdField.getText())) {
 				Platform.runLater(()->{
-					cPasswdLabel.setText("Password fields must match!");
+					cPasswdLabel.setText("Podane hasła muszą być takie same!");
 					wyczyscFieldy();
 				});
 				return;
@@ -91,14 +91,14 @@ public class RejestracjaSceneController {
 			if(nameField.getText().isEmpty() || surnameField.getText().isEmpty() || emailField.getText().isEmpty()
 					|| passwdField.getText().isEmpty() || cPasswdField.getText().isEmpty()) {
 				Platform.runLater(()->{
-					infoLabel.setText("All fields must be filled!");
+					infoLabel.setText("Wszystkie pola muszą być wypełnione!");
 					wyczyscFieldy();
 				});
 				return;
 			}
 			if(!emailField.getText().contains("@") || !emailField.getText().contains(".")) {
 				Platform.runLater(()->{
-					emailLabel.setText("Email must be valid and not taken!");
+					emailLabel.setText("Email musi być poprawny i dostępny!");
 					wyczyscFieldy();
 				});
 				return;
@@ -121,7 +121,7 @@ public class RejestracjaSceneController {
 			
 			if(emailZSerwera.equals(emailField.getText())) {
 				Platform.runLater(()->{
-					emailLabel.setText("Email must be valid!");
+					emailLabel.setText("Email musi być dostępny!");
 					wyczyscFieldy();
 				});
 				return;
@@ -129,7 +129,7 @@ public class RejestracjaSceneController {
 			// Szyfrowanie zewnetrzna biblioteka
 			String haslo = Password.hash(passwdField.getText()).with(bcrypt).getResult();
 			// Operacja w bazie danych poprzez serwer
-			Klient nowyKlient = new Klient(nameField.getText(),surnameField.getText(),emailField.getText(),haslo);
+			Klient nowyKlient = new Klient(nameField.getText(),surnameField.getText(),emailField.getText(),haslo, 0.0);
 			try {
 				ConnectionBox.getInstance().getDoSerwera().writeObject("stworzKlienta()");
 				ConnectionBox.getInstance().getDoSerwera().writeObject(nowyKlient);
@@ -146,7 +146,7 @@ public class RejestracjaSceneController {
 					wyjatekIO.printStackTrace();
 				}
 				LoginSceneController menuLogowania = loader.getController();
-				menuLogowania.udanaRejestracja("Registration successful!");
+				menuLogowania.udanaRejestracja("Rejestracja zakończona sukcesem!");
 				
 				stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
 				scene = new Scene(kontener);

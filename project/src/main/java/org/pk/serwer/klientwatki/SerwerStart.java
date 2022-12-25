@@ -12,13 +12,17 @@ import java.util.concurrent.Executors;
 import org.hibernate.SessionFactory;
 
 public class SerwerStart {
-	public static void start(SessionFactory fabrykaSesji) {
+	public static void start(SessionFactory fabrykaSesji){
+		
 		ServerSocket serwer = null;
 		ExecutorService wykonawcaKlient = null;
+		
 		try {
+			
 			serwer = new ServerSocket(NUMER_PORTU);
-			serwer.setReuseAddress(true);
 			wykonawcaKlient = Executors.newFixedThreadPool(DOSTEPNA_ILOSC_WATKOW);
+			serwer.setReuseAddress(true);
+			
 			// petla nasluchujaca na nowych klientow, .accept() blokuje dzialanie programu
 			while(true) {
 				Socket klient = serwer.accept();
@@ -29,6 +33,7 @@ public class SerwerStart {
 				KlientFtask<Integer> klientFPolaczenie = new KlientFtask<>(klientPolaczenie);
 				wykonawcaKlient.execute(klientFPolaczenie);
 			}	
+			
 		}catch(IOException wyjatek) {
 			wyjatek.printStackTrace();
 		}finally {

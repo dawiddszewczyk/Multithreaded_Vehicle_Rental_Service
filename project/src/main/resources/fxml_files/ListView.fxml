@@ -13,7 +13,7 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <TableView fx:id="tv" layoutX="149.0" layoutY="80.0" onMouseClicked="#wybierzPojazd" prefHeight="234.0" prefWidth="301.0">
+            <TableView fx:id="tv" layoutX="149.0" layoutY="108.0" onMouseClicked="#wybierzPojazd" prefHeight="215.0" prefWidth="301.0">
                <columns>
                   <TableColumn fx:id="tA" prefWidth="75.0" text="id">
                       <cellValueFactory><PropertyValueFactory property="id" />
@@ -32,15 +32,17 @@
                       </cellValueFactory>
                   </TableColumn>
                </columns></TableView>
-            <TextField fx:id="idField" layoutX="149.0" layoutY="46.0" prefHeight="25.0" prefWidth="96.0" />
-            <Label layoutX="149.0" layoutY="29.0" text="Id pojazdu" />
-            <Button layoutX="248.0" layoutY="46.0" mnemonicParsing="false" onAction="#pobierzListeZId" text="Wyszukaj" />
-            <Label fx:id="infoLabel" layoutX="324.0" layoutY="46.0" prefHeight="25.0" prefWidth="184.0" />
+            <TextField fx:id="idField" layoutX="149.0" layoutY="77.0" prefHeight="25.0" prefWidth="96.0" />
+            <Label layoutX="149.0" layoutY="55.0" text="Id pojazdu" />
+            <Button layoutX="258.0" layoutY="77.0" mnemonicParsing="false" onAction="#pobierzListeZId" text="Wyszukaj" />
+            <Label fx:id="infoLabel" layoutX="324.0" layoutY="46.0" prefHeight="25.0" prefWidth="269.0" />
+            <Label fx:id="uzytkownikLabel" layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="149.0" />
+            <Label fx:id="zadluzenieLabel" layoutX="14.0" layoutY="31.0" prefHeight="17.0" prefWidth="149.0" />
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
             <Button layoutX="150.0" layoutY="11.0" mnemonicParsing="false" onAction="#pobierzListe" text="Odśwież" />
-            <Button layoutX="398.0" layoutY="11.0" mnemonicParsing="false" text="Wyjdź" />
+            <Button fx:id="wyjscieButton" layoutX="398.0" layoutY="11.0" mnemonicParsing="false" onAction="#wyjscieList" text="Wyjdź" />
          </children></AnchorPane>
   </items>
 </SplitPane>

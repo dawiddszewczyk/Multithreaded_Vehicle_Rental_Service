@@ -14,6 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Klasa służąca mapowaniu encji bazodanowej wypożyczenie na obiekt javy
+ * jest połączona relacją n:1 z klientem i pojazdem
+ */
 @SuppressWarnings("serial")
 @Table(name="klient_pojazd")
 @Entity

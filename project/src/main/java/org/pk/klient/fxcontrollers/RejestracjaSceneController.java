@@ -21,6 +21,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+/**
+ * Klasa będąca łącznikiem między interfejsem javafx (tutaj: RegisterView.fxml -
+ * okno z rejestracją) a programem
+ */
 public class RejestracjaSceneController {
 	
 	private Stage stage;
@@ -50,14 +54,25 @@ public class RejestracjaSceneController {
 	@FXML
 	private Label cPasswdLabel;
 	
-	public void cofnijDoLogowania(ActionEvent zdarzenie) throws IOException {
-		kontener = FXMLLoader.load(getClass().getResource(APP_VIEW_XML));
-		stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
-		scene = new Scene(kontener);
-		stage.setScene(scene);
-		stage.show();
+	/**
+	 * Metoda służąca do cofnięcia użytkownika do ekranu logowania
+	 * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+	 */
+	public void cofnijDoLogowania(ActionEvent zdarzenie) {
+		try {
+			kontener = FXMLLoader.load(getClass().getResource(APP_VIEW_XML));
+			stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
+			scene = new Scene(kontener);
+			stage.setScene(scene);
+			stage.show();
+		}catch (Exception wyjatek) {
+			System.out.println("Wyjatek podczas cofania do logowania");
+		}
 	}
 	
+	/**
+	 * Metoda służąca do wyczyszczenia wszystkich pól (inputów)
+	 */
 	public void wyczyscFieldy() {
 		nameField.clear();
 		surnameField.clear();
@@ -66,6 +81,9 @@ public class RejestracjaSceneController {
 		cPasswdField.clear();
 	}
 	
+	/**
+	 * Metoda służąca do wyczyszczenia wszyskich labeli informacyjnych
+	 */
 	public void wyczyscLabele() {
 		infoLabel.setText(null);
 		nameLabel.setText(null);
@@ -75,8 +93,13 @@ public class RejestracjaSceneController {
 		cPasswdLabel.setText(null);
 	}
 	
+	/**
+	 * Metoda obsługująca proces rejestracji. Komunikuje się z serwerem i przeprowadza proces walidacji.
+	 * Po udanej rejestracji, następuje przeniesienie użytkownika do ekranu logowania
+	 * @param zdarzenie przyjmuje obiekt klasy ActionEvent zawierający informacje o akcjach użytkownika
+	 */
 	@FXML
-	public void wykonajRejestracje(ActionEvent zdarzenie) throws IOException, ClassNotFoundException, InterruptedException {
+	public void wykonajRejestracje(ActionEvent zdarzenie) {
 		Runnable watek = ()->{
 			// Wstepny clear labelow w razie N-tej proby rejestracji
 			Platform.runLater(()->wyczyscLabele());

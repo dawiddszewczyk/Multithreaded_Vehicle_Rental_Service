@@ -9,6 +9,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.pk.entity.Pojazd;
 
+/**
+ * Klasa (singleton) w której znajdują się metody operujące na bazie danych, które
+ * są związane z klasą Pojazd
+ */
 public class PojazdDao {
 	
 	private static PojazdDao pojazdDao;
@@ -18,16 +22,28 @@ public class PojazdDao {
 		this.fabrykaSesji = fabrykaSesji;
 	}
 
+	/**
+	 * Służy do inicjalizacji singletona, z wykorzystaniem obiektu fabrykiSesji stworzonego w MainServer
+	 * @param fabrykaSesji obiekt klasy SessionFactory
+	 * @return obiekt singleton PojazdDao
+	 */
 	public static PojazdDao getInstance(SessionFactory fabrykaSesji) {
 		if(pojazdDao==null) pojazdDao = new PojazdDao(fabrykaSesji);
 		return pojazdDao;
 	}
 	
+	/**
+	 * @return obiekt singleton PojazdDao
+	 */
 	public static PojazdDao getInstance() {
 		if(pojazdDao==null) return null;
 		return pojazdDao;
 	}
 	
+	/**
+	 * Metoda służąca do aktualizacji rekordu dla podanego obiektu pojazdu w bazie danych
+	 * @param pojazd gotowy obiekt klasy Pojazd
+	 */
 	public void zaktualizujPojazd(Pojazd pojazd){
 		
 		Session sesja = fabrykaSesji.getCurrentSession();
@@ -45,6 +61,12 @@ public class PojazdDao {
 		sesja.close();
 	}
 	
+	/**
+	 * Metoda do otrzymania listy wszystkich pojazdów, lub konkretnego dla danego ID
+	 * @param idPojazdu id pojazdu do zwrócenia
+	 * @param uzyjId flaga decydująca, czy należy użyć id
+	 * @return lista uzyskanych pojazdów z bazy danych
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Pojazd> getListaPojazdow(int idPojazdu, boolean uzyjId){
 		

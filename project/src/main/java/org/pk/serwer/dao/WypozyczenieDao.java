@@ -1,6 +1,7 @@
 package org.pk.serwer.dao;
 
 import java.math.BigDecimal;
+
 import java.sql.Timestamp;
 
 import javax.persistence.NoResultException;
@@ -11,6 +12,10 @@ import org.hibernate.SessionFactory;
 import org.pk.entity.Pojazd;
 import org.pk.entity.Wypozyczenie;
 
+/**
+ * Klasa (singleton) w której znajdują się metody operujące na bazie danych, które
+ * są związane z klasą Wypozyczenie
+ */
 public class WypozyczenieDao {
 
 	private static WypozyczenieDao wypozyczenieDao;
@@ -19,17 +24,30 @@ public class WypozyczenieDao {
 	private WypozyczenieDao(SessionFactory fabrykaSesji) {
 		this.fabrykaSesji = fabrykaSesji;
 	}
-
+	
+	/**
+	 * Służy do inicjalizacji singletona, z wykorzystaniem obiektu fabrykiSesji stworzonego w MainServer
+	 * @param fabrykaSesji obiekt klasy SessionFactory
+	 * @return obiekt singleton WypozyczenieDao
+	 */
 	public static WypozyczenieDao getInstance(SessionFactory fabrykaSesji) {
 		if(wypozyczenieDao==null) wypozyczenieDao = new WypozyczenieDao(fabrykaSesji);
 		return wypozyczenieDao;
 	}
 	
+	/**
+	 * @return obiekt singleton WypozyczenieDao
+	 */
 	public static WypozyczenieDao getInstance() {
 		if(wypozyczenieDao==null) return null;
 		return wypozyczenieDao;
 	}
 	
+	/**
+	 * Metoda służaca do stworzenia wypożyczenia w bazie danych
+	 * @param wypozyczenie gotowy obiekt klasy Wypozyczenie
+	 * @return stworzone wypożyczenie, w celu pobrania z niego id (z bazy danych) po stronie klienta
+	 */
 	public Wypozyczenie stworzWypozyczenie(Wypozyczenie wypozyczenie) {
 		
 		Session sesja = fabrykaSesji.getCurrentSession();
@@ -46,6 +64,11 @@ public class WypozyczenieDao {
 		return wypozyczenie;
 	}
 	
+	/**
+	 * Metoda do aktualizacji wypożyczenia. Przy okazji są aktualizowane także obiekty
+	 * pojazdu i klienta, powiązane z wypożyczeniem
+	 * @param wypozyczenie gotowy obiekt klasy Wypozyczenie 
+	 */
 	public void zaktualizujWypozyczenie(Wypozyczenie wypozyczenie) {
 
 		Session sesja = fabrykaSesji.getCurrentSession();
@@ -65,6 +88,11 @@ public class WypozyczenieDao {
 		sesja.close();
 	}
 	
+	/**
+	 * Metoda do sprawdzenia, czy dany pojazd jest dostępny (czy nie jest obecnie wypożyczony)
+	 * @param pojazd do sprawdzenia, obiekt klasy Pojazd
+	 * @return flagę boolean true - dostępny, false - zajęty
+	 */
 	public Boolean sprawdzDostepnosc(Pojazd pojazd) {
 		
 		Session sesja = fabrykaSesji.getCurrentSession();
@@ -91,6 +119,10 @@ public class WypozyczenieDao {
 		return dostepny;
 	}
 	
+	/**
+	 * Metoda służąca do skoordynowania z serwerem wypożyczenia, gdy klient w sposób nagły/nieprzewidywalny wyłączy aplikację
+	 * @param idKlienta id klienta, który zakończył działanie aplikacji
+	 */
 	public void usuniecieWypozyczenPoNaglymWylaczeniu(int idKlienta) {
 		
 		Session sesja = fabrykaSesji.getCurrentSession();

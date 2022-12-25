@@ -12,6 +12,10 @@ import org.pk.serwer.dao.PojazdDao;
 import org.pk.serwer.dao.WypozyczenieDao;
 import org.pk.serwer.klientwatki.KlientCallable;
 
+/**
+ * Klasa zawierająca statyczną metodę, która jest używana w klasie KlientCallable. Jest ona łącznikiem
+ * między wątkiem klienta (na serwerze) a bazą danych. Przechwytuje rozkazy klienta.
+ */
 public class KlientManagerKomend {
 	public static <V> void wykonajKomende(String komenda, ObjectOutputStream doKlienta,
 			ObjectInputStream odKlienta, KlientCallable<V> klientCallable) throws ClassNotFoundException, IOException {

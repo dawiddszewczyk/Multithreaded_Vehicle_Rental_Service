@@ -10,6 +10,10 @@ import org.pk.entity.Klient;
 import com.password4j.BcryptFunction;
 import com.password4j.Password;
 
+/**
+ * Klasa (singleton) w której znajdują się metody operujące na bazie danych, które
+ * są związane z klasą Klient
+ */
 public class KlientDao {
 
 	private static KlientDao klientDao;
@@ -19,16 +23,28 @@ public class KlientDao {
 		this.fabrykaSesji = fabrykaSesji;
 	}
 
+	/**
+	 * Służy do inicjalizacji singletona, z wykorzystaniem obiektu fabrykiSesji stworzonego w MainServer
+	 * @param fabrykaSesji obiekt klasy SessionFactory
+	 * @return obiekt singleton KlientDao
+	 */
 	public static KlientDao getInstance(SessionFactory fabrykaSesji) {
 		if(klientDao==null) klientDao = new KlientDao(fabrykaSesji);
 		return klientDao;
 	}
 	
+	/**
+	 * @return obiekt singleton KlientDao
+	 */
 	public static KlientDao getInstance() {
 		if(klientDao==null) return null;
 		return klientDao;
 	}
 	
+	/**
+	 * Metoda służąca do stworzenia klienta w bazie danych
+	 * @param klient gotowy obiekt klasy Klient
+	 */
 	public void stworzKlienta(Klient klient) {
 		Session sesja = fabrykaSesji.getCurrentSession();
 		sesja.beginTransaction();
@@ -43,6 +59,11 @@ public class KlientDao {
 		sesja.close();
 	}
 
+	/**
+	 * Metoda służąca do pobrania emaila z bazy danych.
+	 * @param podanyEmail podany mail przez klienta
+	 * @return email z bazy danych lub null
+	 */
 	public String pobierzEmail(String podanyEmail) {
 		
 		String emailZBazy="";
@@ -65,6 +86,12 @@ public class KlientDao {
 		return emailZBazy;
 	}
 
+	/**
+	 * Metoda służąca do zalogowania użytkownika
+	 * @param podanyEmail podany email
+	 * @param podaneHaslo podane haslo
+	 * @return obiekt klasy klient, jeżeli użytkownik podał poprawne dane. W przeciwnym wypadku null
+	 */
 	public Klient logowanie(String podanyEmail, String podaneHaslo) {
 		
 		Klient klientZBazy=null;

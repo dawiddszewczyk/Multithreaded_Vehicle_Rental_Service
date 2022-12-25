@@ -15,6 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * Klasa służąca mapowaniu encji bazodanowej pojazd na obiekt javy
+ * jest połączona relacją 1:n z wypożyczeniami
+ */
 @SuppressWarnings("serial")
 @Table(name="pojazd")
 @Entity
@@ -57,6 +61,11 @@ public class Pojazd implements Serializable {
 		this.licznikkm = licznikkm;
 	}
 
+	/**
+	 * Metoda wywoływana w metodzie klasy Klient dodajWypozyczenie2S. Służy ona do przypisania dla
+	 * pojazdu konkretnego wypożyczenia
+	 * @param wypozyczenie Uzupełnione wypożyczenie o klienta/pojazd
+	 */
 	public void dodajWypozyczenie1S(Wypozyczenie wypozyczenie) {
 		if(wypozyczenia==null) wypozyczenia=new ArrayList<>();
 		wypozyczenia.add(wypozyczenie);

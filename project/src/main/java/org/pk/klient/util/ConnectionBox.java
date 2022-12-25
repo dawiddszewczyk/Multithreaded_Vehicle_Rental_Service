@@ -18,8 +18,7 @@ public class ConnectionBox {
 	private int idKlienta;
 	private Klient klient;
 	private ExecutorService wykonawcaGlobalny;
-	private ObecneWypozyczenieFTask<?> wypozyczenie;
-	
+	private ObecneWypozyczenieFTask<?> wypozyczenieFt;
 	
 	private ConnectionBox(ObjectInputStream odSerwera, ObjectOutputStream doSerwera, Socket polaczenieSerwer) {
 		this.odSerwera=odSerwera;
@@ -56,7 +55,7 @@ public class ConnectionBox {
 		return klient;
 	}
 
-	public void setIdKlienta(int idKlienta,Klient klient) {
+	public void setKlientIIdKlienta(int idKlienta,Klient klient) {
 		this.idKlienta = idKlienta;
 		this.klient=klient;
 	}
@@ -73,12 +72,12 @@ public class ConnectionBox {
 		this.wykonawcaGlobalny = wykonawcaGlobalny;
 	}
 	
-	public ObecneWypozyczenieFTask<?> getWypozyczenie() {
-		return wypozyczenie;
+	public ObecneWypozyczenieFTask<?> getWypozyczenieFt() {
+		return wypozyczenieFt;
 	}
 
-	public void setWypozyczenie(ObecneWypozyczenieFTask<?> wypozyczenie) {
-		this.wypozyczenie = wypozyczenie;
+	public void setWypozyczenieFt(ObecneWypozyczenieFTask<?> wypozyczenieFt) {
+		this.wypozyczenieFt = wypozyczenieFt;
 	}
 
 	public void zamknijPolaczenia() {
@@ -91,5 +90,4 @@ public class ConnectionBox {
 			wyjatekIO.printStackTrace();
 		}
 	}
-	
 }

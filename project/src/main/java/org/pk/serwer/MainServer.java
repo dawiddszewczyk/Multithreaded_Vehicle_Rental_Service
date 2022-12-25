@@ -8,6 +8,8 @@ import org.pk.entity.Klient;
 import org.pk.entity.Pojazd;
 import org.pk.entity.Wypozyczenie;
 import org.pk.serwer.dao.KlientDao;
+import org.pk.serwer.dao.PojazdDao;
+import org.pk.serwer.dao.WypozyczenieDao;
 import org.pk.serwer.klientwatki.SerwerStart;
 
 public class MainServer {
@@ -19,8 +21,10 @@ public class MainServer {
 				 										 .addAnnotatedClass(Pojazd.class)
 				 										 .addAnnotatedClass(Wypozyczenie.class)
 				 										 .buildSessionFactory();
-		// inicjalizacja singletona dao
+		// inicjalizacja singletonow dao
 		KlientDao.getInstance(fabrykaSesji);
+		WypozyczenieDao.getInstance(fabrykaSesji);
+		PojazdDao.getInstance(fabrykaSesji);
 		// przesylam fabryke sesji, by zamknac ja gdy serwer zostanie wylaczony
 		SerwerStart.start(fabrykaSesji);
 	}

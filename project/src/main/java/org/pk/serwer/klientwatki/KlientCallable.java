@@ -1,6 +1,5 @@
 package org.pk.serwer.klientwatki;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,11 +11,19 @@ import org.pk.serwer.util.KlientManagerKomend;
 public class KlientCallable <V> implements Callable<V> {
 
 	private final Socket klient;
+	private int idKlienta;
 	
 	public KlientCallable(Socket klient) {
 		this.klient = klient;
 	}
-
+	
+	public int getIdKlienta() {
+		return idKlienta;
+	}
+	public void setIdKlienta(int idKlienta) {
+		this.idKlienta = idKlienta;
+	}
+	
 	@Override
 	public V call() throws Exception {
 		ObjectOutputStream doKlienta = null;
@@ -31,12 +38,12 @@ public class KlientCallable <V> implements Callable<V> {
 				//klient.isConnected()
 				polecenieKlient = odKlienta.readObject();
 				// w strumieniu moze zostac jeszcze jeden obiekt, np. klient, dlatego przekazujemy strumienie
-				KlientManagerKomend.wykonajKomende((String)polecenieKlient, doKlienta, odKlienta);
+				KlientManagerKomend.wykonajKomende((String)polecenieKlient, doKlienta, odKlienta, this);
 			}
-		}catch(EOFException wyjatekStrumienia) {
-			System.out.println("Klient rozlaczony: " +  klient.getInetAddress().getHostAddress());
 		}catch (IOException wyjatek) {
-			wyjatek.printStackTrace();
+			System.out.println("Klient rozlaczony: " +  klient.getInetAddress().getHostAddress());
+			KlientManagerKomend.wykonajKomende("usuniecieWypozyczenPoNaglymWylaczeniuK()",
+					doKlienta, odKlienta, this);
 		}finally {
 			try {
 				if(doKlienta!=null) doKlienta.close();
@@ -45,9 +52,7 @@ public class KlientCallable <V> implements Callable<V> {
 			}catch(IOException wyjatek) {
 				wyjatek.printStackTrace();
 			}
-		}
-		
+		}	
 		return null;
 	}
-
 }

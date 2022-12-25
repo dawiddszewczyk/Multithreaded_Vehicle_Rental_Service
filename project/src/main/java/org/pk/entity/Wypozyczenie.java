@@ -1,10 +1,12 @@
 package org.pk.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +16,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Table(name="klient_pojazd")
-@Entity(name="klient_pojazd")
+@Entity
 public class Wypozyczenie implements Serializable {
 	
 	@Id
@@ -22,15 +24,15 @@ public class Wypozyczenie implements Serializable {
 	@Column(name="idwypozyczenia")
 	private int id;
 	@Column(name="data_wyp")
-	private Date dataWyp = new Date(System.currentTimeMillis());
+	private Timestamp dataWyp = new Timestamp(System.currentTimeMillis());
 	@Column(name="data_zwr")
-	private Date dataZwr;
+	private Timestamp dataZwr;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="idklientaW")
 	private Klient klient;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="idpojazduW")
 	private Pojazd pojazd;
 	
@@ -44,19 +46,19 @@ public class Wypozyczenie implements Serializable {
 		this.pojazd = pojazd;
 	}
 
-	public Date getDataWyp() {
+	public Timestamp getDataWyp() {
 		return dataWyp;
 	}
 
-	public void setDataWyp(Date dataWyp) {
+	public void setDataWyp(Timestamp dataWyp) {
 		this.dataWyp = dataWyp;
 	}
 
-	public Date getDataZwr() {
+	public Timestamp getDataZwr() {
 		return dataZwr;
 	}
 
-	public void setDataZwr(Date dataZwr) {
+	public void setDataZwr(Timestamp dataZwr) {
 		this.dataZwr = dataZwr;
 	}
 
@@ -88,5 +90,22 @@ public class Wypozyczenie implements Serializable {
 	public String toString() {
 		return "Wypozyczenie [idW=" + id + ", idK=" + klient.getId() + ", idP=" + pojazd.getId() + ", dataW=" + dataWyp + ", DataZ="
 				+ dataZwr + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Wypozyczenie other = (Wypozyczenie) obj;
+		return id == other.id;
 	}
 }

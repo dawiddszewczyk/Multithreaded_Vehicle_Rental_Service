@@ -1,6 +1,5 @@
 package org.pk.klient;
 
-import static org.pk.util.StaleWartosci.APP_VIEW_XML;
 import static org.pk.util.StaleWartosci.NUMER_PORTU;
 import static org.pk.util.StaleWartosci.TYTUL_APKI;
 
@@ -39,12 +38,10 @@ public class App extends Application {
 			doSerwera = new ObjectOutputStream(serwer.getOutputStream());
 			odSerwera = new ObjectInputStream(serwer.getInputStream());
 			ConnectionBox.getInstance(odSerwera,doSerwera,serwer); // instancjonowanie logiki polaczen w formie singletona
-
     	}catch (Exception wyjatek) {
 			System.out.println("Wyjatek od strony klienta!");
 			wyjatek.printStackTrace();
 		}
-
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("/fxml_files/AppView.fxml"));
 			Scene scene = new Scene(root);

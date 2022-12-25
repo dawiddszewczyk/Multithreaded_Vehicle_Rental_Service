@@ -5,10 +5,12 @@ import javafx.beans.property.SimpleStringProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,7 +19,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Table(name="pojazd")
-@Entity(name="pojazd")
+@Entity
 public class Pojazd implements Serializable {
 
 	@Id
@@ -32,12 +34,12 @@ public class Pojazd implements Serializable {
 	private double licznikkm;
 
 	@OneToMany(
+		fetch = FetchType.LAZY,
 		mappedBy = "pojazd",
-		cascade = CascadeType.ALL
+		cascade = {CascadeType.MERGE, CascadeType.REMOVE}
 	)
 	private List<Wypozyczenie> wypozyczenia;
 
-	
 	// Pusty konstruktor dla Hibernate
 	public Pojazd() {
 		
@@ -96,5 +98,22 @@ public class Pojazd implements Serializable {
 	public String toString() {
 		return "Pojazd [id=" + id + ", nazwa=" + nazwa + ", stanBaterii=" + stanBaterii + ", licznikkm=" + licznikkm
 				+ ", wypozyczenia=" + wypozyczenia + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pojazd other = (Pojazd) obj;
+		return id == other.id;
 	}
 }

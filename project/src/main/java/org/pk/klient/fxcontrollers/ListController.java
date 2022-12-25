@@ -1,33 +1,37 @@
 package org.pk.klient.fxcontrollers;
 
-        import javafx.application.Platform;
-        import javafx.collections.ObservableList;
-        import javafx.event.ActionEvent;
-        import javafx.fxml.FXML;
-        import javafx.fxml.FXMLLoader;
-        import javafx.scene.Node;
-        import javafx.scene.Parent;
-        import javafx.scene.Scene;
-        import javafx.scene.control.TableColumn;
-        import javafx.scene.control.TableView;
-        import javafx.scene.input.MouseEvent;
-        import javafx.stage.Stage;
-        import org.pk.entity.Klient;
-        import org.pk.entity.Pojazd;
-        import org.pk.entity.Wypozyczenie;
-        import org.pk.klient.util.ConnectionBox;
-        import org.pk.serwer.dao.KlientDao;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import org.pk.entity.Klient;
+import org.pk.entity.Pojazd;
+import org.pk.entity.Wypozyczenie;
+import org.pk.klient.util.ConnectionBox;
+import java.io.IOException;
+import java.util.List;
 
-        import java.io.IOException;
-        import java.util.List;
-
-        import static org.pk.util.StaleWartosci.APP_VIEW_XML;
-        import static org.pk.util.StaleWartosci.SCOOTER_VIEW_XML;
+import static org.pk.util.StaleWartosci.SCOOTER_VIEW_XML;
 
 public class ListController {
+	
     private Stage stage;
     private Scene scene;
     private Parent kontener;
+	
     @FXML
     private TableColumn<Pojazd, Integer> tA;
 
@@ -41,77 +45,230 @@ public class ListController {
     private TableColumn<Pojazd, Double> tD;
 
     @FXML
-    private TableView tv;
+    private TableView<Pojazd> tv;
+    
+    @FXML
+    private TextField idField;
+    
+    @FXML
+    private Label infoLabel;
+    
+    @FXML
+    private Label uzytkownikLabel;
+    
+    @FXML
+    private Label zadluzenieLabel;
+    
+    @FXML
+    private Button wyjscieButton;
+    
     private List<Pojazd> listaHulajnog;
     private Pojazd wybranyPojazd;
-    @FXML
-
-    void pobierzListe(ActionEvent event) throws IOException, ClassNotFoundException {
-        ConnectionBox.getInstance().getDoSerwera().writeObject("getList()");
-        ConnectionBox.getInstance().getDoSerwera().flush();
-        listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
-        // Stream bug? Czyszczenie strumienia poprzez dodatkowy odczyt
-        ConnectionBox.getInstance().getOdSerwera().readObject();
-        tv.getItems().clear();
-        for(Pojazd temp:listaHulajnog){
-            tv.getItems().add(temp);
-        }
-
-    }
-    @FXML
-    public void wybierzPojazd(MouseEvent event) {
+    
+    @SuppressWarnings("unchecked")
+	@FXML
+    public void pobierzListe(ActionEvent zdarzenie) {
+    	
     	Runnable watek = () ->{
-    		if (event.getClickCount() == 2)
-    		{
+    		try {
+    			
+    			Platform.runLater(()->{
+    				infoLabel.setText("");
+    				uzytkownikLabel.setText("Witaj, " + ConnectionBox.getInstance()
+    													.getKlient().getImie());
+    				zadluzenieLabel.setText("Twoje zadluzenie: " + ConnectionBox.getInstance()
+    															   .getKlient().getZadluzenie()
+    															 + "PLN");
+    			});
+    			
+    			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
+    			ConnectionBox.getInstance().getDoSerwera().writeObject("getListaPojazdow(false)");
+    			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
+    			
+    			listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
+    			tv.getItems().clear();
+    		
+    			for(Pojazd temp:listaHulajnog){
+    				tv.getItems().add(temp);
+    			}
+    			tv.refresh();
+    			
+    		}catch (Exception wyjatek) {
+				wyjatek.printStackTrace();
+			}
+    	};
+    	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
+    }
+    
+    @FXML
+	@SuppressWarnings("unchecked")
+    public void pobierzListeZId(ActionEvent zdarzenie) {
+		Runnable watek = () ->{
+    		
+    		String id = idField.getText();
+    		
+    		// usun wszystko co nie jest liczba z inputu
+    		if(!id.matches("[0-9]*"))
+    			id = id.replaceAll("[^0-9]", "");
+
+    		try {
+    			
+    			if(id.isBlank()) {
+    				tv.getItems().clear();
+    				tv.refresh();
+    				return;
+    			}
+    			
+    			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
+    			ConnectionBox.getInstance().getDoSerwera().writeObject("getListaPojazdow(true)");
+    			ConnectionBox.getInstance().getDoSerwera().writeObject(Integer.parseInt(id));
+    			ConnectionBox.getInstance().getDoSerwera().flush();
+    			ConnectionBox.getInstance().getDoSerwera().reset();
+    			
+    			// czytaj strumien dopoki nie zostanie uzyskany tylko jeden rekord lub brak wyniku
+    			do {
+    				listaHulajnog = (List<Pojazd>) ConnectionBox.getInstance().getOdSerwera().readObject();
+    			}while(listaHulajnog.size()!=1 && !listaHulajnog.isEmpty() && listaHulajnog!=null);
+    			
+    			if(listaHulajnog.isEmpty() || listaHulajnog==null) {
+    				tv.getItems().clear();
+    				tv.refresh();
+    				return;
+    			}else {
+        			tv.getItems().clear();
+        			for(Pojazd temp:listaHulajnog){
+        				tv.getItems().add(temp);
+        			}
+        			tv.refresh();
+    			}
+    			
+    		}catch(Exception wyjatek) {
+    			wyjatek.printStackTrace();
+    		}
+    		
+    	};
+    	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
+    }
+    
+    @FXML
+    public void wybierzPojazd(MouseEvent zdarzenie) {
+    	
+    	Runnable watek = () ->{
+    		if(zdarzenie.getClickCount() == 2) {
     			if(tv.getSelectionModel().getSelectedItem().getClass()==Pojazd.class){
-    				wybranyPojazd=(Pojazd)tv.getSelectionModel().getSelectedItem();
+    				
     				Platform.runLater(()->{
-    					// Stworzenie konta zakonczone sukcesem, przejscie na scene logowania i zaladowanie komunikatu
+    					
+    					// popup w celu potwierdzenia wyboru
+    					Alert alert = new Alert(AlertType.CONFIRMATION, "Czy na pewno chcesz wypożyczyć pojazd?",
+    							ButtonType.OK, ButtonType.CANCEL);
+    					alert.setTitle("Potwierdzenie");
+    					alert.setHeaderText("Potwierdz wybor");
+    					
+    					((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Potwierdz");
+    					((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Anuluj");
+    					alert.showAndWait();
+    					
+    					if(alert.getResult() == ButtonType.CANCEL)
+    						return;
+    					
+    					// po zaakceptowaniu wybor pojazdu
+        				wybranyPojazd=(Pojazd)tv.getSelectionModel().getSelectedItem();
+    					
+    					// sprawdzenie czy pojazd nie zostal w miedzyczasie zajety przez innego uzytkownika
+        				try {
+        					ConnectionBox.getInstance().getDoSerwera().flush();
+            				ConnectionBox.getInstance().getDoSerwera().reset();
+                			ConnectionBox.getInstance().getDoSerwera().writeObject("sprawdzDostepnosc()");
+                			ConnectionBox.getInstance().getDoSerwera().writeObject(wybranyPojazd);
+                			ConnectionBox.getInstance().getDoSerwera().flush();
+                			ConnectionBox.getInstance().getDoSerwera().reset();
+                			
+                    		Object potwierdzenie = null;
+                    		do {
+                    			potwierdzenie = ConnectionBox.getInstance().getOdSerwera().readObject();
+                    		}while(!(potwierdzenie instanceof Boolean));
+                    		
+                    		if(!(Boolean)potwierdzenie) {
+                    			infoLabel.setText("Pojazd jest już zajęty, proszę o odświeżenie!");
+                    			return;
+                    		}
+                    		
+        				}catch (Exception wyjatek) {
+							wyjatek.printStackTrace();
+						}
+        				
+        				// inicjalizacja widoku ze statystykami pojazdu
     					FXMLLoader loader = new FXMLLoader(getClass().getResource(SCOOTER_VIEW_XML));
+    				
     					try {
     						kontener = loader.load();
-    					} catch (IOException wyjatekIO) {
+    					}catch (IOException wyjatekIO) {
     						wyjatekIO.printStackTrace();
     					}
-    					
-    					stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+    					stage = (Stage) ((Node)zdarzenie.getSource()).getScene().getWindow();
     					scene = new Scene(kontener);
     					stage.setScene(scene);
-    					
-    					ScooterController scooterController=loader.getController();
+    				
+    					// stworzenie nowego wypozyczenia i dodanie go do watku
+    					HulajnogaController scooterController=loader.getController();
     					scooterController.ustawWartosci(wybranyPojazd);
+                    	Klient tempKlient=ConnectionBox.getInstance().getKlient();
+                    	Wypozyczenie tempWypozyczenie = new Wypozyczenie(tempKlient,wybranyPojazd);
+                    	tempKlient.dodajWypozyczenie2S(tempWypozyczenie);
+                    	
+                    	try {
+                    		// inicjalizacja wypozyczenia z baza
+                			ConnectionBox.getInstance().getDoSerwera().flush();
+                			ConnectionBox.getInstance().getDoSerwera().reset();
+                    		ConnectionBox.getInstance().getDoSerwera().writeObject("stworzWypozyczenie()");
+                    		ConnectionBox.getInstance().getDoSerwera().writeObject(tempWypozyczenie);
+                    		ConnectionBox.getInstance().getDoSerwera().flush();
+                    		ConnectionBox.getInstance().getDoSerwera().reset();
 
-                        Klient tempKlient=ConnectionBox.getInstance().getKlient();
-                        Wypozyczenie tempWypozyczenie = new Wypozyczenie(tempKlient,wybranyPojazd);
-                        System.out.println("Pierwsze " + tempWypozyczenie);
-                        tempKlient.dodajWypozyczenie2S(tempWypozyczenie);
-                        //System.out.println("Drugie " + tempKlient.getWypozyczenia().get(tempKlient.getWypozyczenia().size()-1).toString());
-
-                        //stage.setUserData(tempWypozyczenie);
-
-                        try {
-                            ConnectionBox.getInstance().getDoSerwera().writeObject("stworzWypozyczenie()");
-                            ConnectionBox.getInstance().getDoSerwera().writeObject(tempWypozyczenie);
-                            ConnectionBox.getInstance().getDoSerwera().flush();
-                            tempWypozyczenie.setId(((Wypozyczenie)ConnectionBox.getInstance().getOdSerwera().readObject()).getId());
-                            System.out.println("Stan wypozyczenia po zapisaniu w bazie i otrzymaniu id: "+ tempWypozyczenie);
-                        } catch (IOException | ClassNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        
+                    		Object odbiorZeStrumienia = null;
+                    		do {
+                    			odbiorZeStrumienia = ConnectionBox.getInstance().getOdSerwera().readObject();
+                    			if(odbiorZeStrumienia instanceof Wypozyczenie)
+                    			tempWypozyczenie.setId(((Wypozyczenie)odbiorZeStrumienia).getId());
+                    		}while(!(odbiorZeStrumienia instanceof Wypozyczenie));
+                    		
+                    	}catch (IOException | ClassNotFoundException wyjatek) {
+                    		wyjatek.printStackTrace();
+                    	}
     					try {
     						scooterController.zmienStan(tempWypozyczenie);
-    					} catch (InterruptedException e) {
-    						throw new RuntimeException(e);
+    					}catch(InterruptedException wyjatekPrzerwaniaWatku) {
+    						wyjatekPrzerwaniaWatku.printStackTrace(); 
     					}
-    					
     					stage.show();
     				});
     			}
-
     		}
     	};
     	ConnectionBox.getInstance().getWykonawcaGlobalny().execute(watek);
+    }
+
+    @FXML
+    public void wyjscieList(ActionEvent zdarzenie) {
+    	
+		Alert alert = new Alert(AlertType.CONFIRMATION, "Czy na pewno chcesz wyjść z aplikacji?",
+				ButtonType.OK, ButtonType.CANCEL);
+		alert.setTitle("Potwierdzenie");
+		alert.setHeaderText("Potwierdz wyjście");
+		
+		((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Potwierdz");
+		((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Anuluj");
+		alert.showAndWait();
+		
+		if(alert.getResult() == ButtonType.CANCEL)
+			return;
+    	
+    	ConnectionBox.getInstance().zamknijPolaczenia();
+        Stage stage = (Stage) wyjscieButton.getScene().getWindow();
+        stage.close();
     }
 }

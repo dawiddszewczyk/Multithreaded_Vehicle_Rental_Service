@@ -1,5 +1,6 @@
 package org.pk.klient;
 
+import static org.pk.util.StaleWartosci.JAVA_PNG;
 import static org.pk.util.StaleWartosci.NUMER_PORTU;
 import static org.pk.util.StaleWartosci.TYTUL_APKI;
 
@@ -9,12 +10,12 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import javafx.fxml.FXMLLoader;
-import org.pk.entity.Klient;
 import org.pk.klient.util.ConnectionBox;
 
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -48,6 +49,7 @@ public class App extends Application {
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
 			stage.setTitle(TYTUL_APKI);
+			stage.getIcons().add(new Image(JAVA_PNG));
 			stage.show();
 			stage.setOnCloseRequest((zdarzenie)->ConnectionBox.getInstance().zamknijPolaczenia());
 		} catch (IOException wyjatekIO) {

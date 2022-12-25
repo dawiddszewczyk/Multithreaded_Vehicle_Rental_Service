@@ -19,4 +19,5 @@ public class StaleWartosci {
 	public static final String REGISTER_VIEW_XML = "/fxml_files/RegisterView.fxml";
 	public static final String LIST_VIEW_XML = "/fxml_files/ListView.fxml";
 	public static final String SCOOTER_VIEW_XML = "/fxml_files/HulajnogaView.fxml";
+	public static final String JAVA_PNG = "/png_files/java-icon.png";
 }
